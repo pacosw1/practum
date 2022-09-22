@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": false,
+        "amount": 30
+    },
+    "auditLog": "/Users/pacosw/Documents/practum/src/logs/debug/.d69581c13cdafcd3ccd774d0a503c768001b20cc-audit.json",
+    "files": [
+        {
+            "date": 1663705679925,
+            "name": "/Users/pacosw/Documents/practum/src/logs/debug/2022-09-20.log",
+            "hash": "d2390174b31a1b8061893d58998d01c296dae198417c9f296bce02d7790b999a"
+        },
+        {
+            "date": 1663880528640,
+            "name": "/Users/pacosw/Documents/practum/src/logs/debug/2022-09-22.log",
+            "hash": "4b90a62128417d520911a7bc486fde51e53d77088738954360e11ea48093caff"
+        }
+    ],
+    "hashType": "sha256"
+}

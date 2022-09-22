@@ -1,0 +1,58 @@
+2022-09-20 15:28:00 info: =================================
+2022-09-20 15:28:00 info: ======= ENV: development =======
+2022-09-20 15:28:00 info: 🚀 App listening on the port 3000
+2022-09-20 15:28:00 info: =================================
+2022-09-20 15:28:09 info: [0mGET / [32m200[0m 1.913 ms - 2[0m
+2022-09-20 15:28:16 info: [0mGET / [36m304[0m 1.104 ms - -[0m
+2022-09-20 15:28:34 info: [0mGET /api-docs [36m301[0m 2.397 ms - 183[0m
+2022-09-20 15:28:34 info: [0mGET /api-docs/ [32m200[0m 2.150 ms - -[0m
+2022-09-20 15:28:38 info: [0mGET /api-docs/ [32m200[0m 1.337 ms - -[0m
+2022-09-20 15:28:39 info: [0mGET /api-docs/ [32m200[0m 0.729 ms - -[0m
+2022-09-20 15:28:40 info: [0mGET /api-docs/ [32m200[0m 0.914 ms - -[0m
+2022-09-20 15:28:41 info: [0mGET /api-docs/ [32m200[0m 0.570 ms - -[0m
+2022-09-20 15:28:41 info: [0mGET /api-docs/ [32m200[0m 1.518 ms - -[0m
+2022-09-20 15:28:41 info: [0mGET /api-docs/ [32m200[0m 2.354 ms - -[0m
+2022-09-20 15:28:41 info: [0mGET /api-docs/ [32m200[0m 1.034 ms - -[0m
+2022-09-20 15:28:41 info: [0mGET /api-docs/ [32m200[0m 1.354 ms - -[0m
+2022-09-20 15:28:42 info: [0mGET /api-docs/ [32m200[0m 2.406 ms - -[0m
+2022-09-20 15:28:42 info: [0mGET /api-docs/ [32m200[0m 0.686 ms - -[0m
+2022-09-20 15:28:42 info: [0mGET /api-docs/ [32m200[0m 0.864 ms - -[0m
+2022-09-20 15:29:13 info: [0mGET /api-docs/index [32m200[0m 1.971 ms - -[0m
+2022-09-20 15:29:18 info: [0mGET /api-docs/index [36m304[0m 0.580 ms - -[0m
+2022-09-20 15:29:18 info: [0mGET /api-docs/index [32m200[0m 0.535 ms - -[0m
+2022-09-20 15:29:18 info: [0mGET /api-docs/ [32m200[0m 0.691 ms - -[0m
+2022-09-20 15:29:19 info: [0mGET /api-docs/ [32m200[0m 0.669 ms - -[0m
+2022-09-20 15:29:38 info: [0mGET /api-docs/* [32m200[0m 0.756 ms - -[0m
+2022-09-20 15:33:17 info: =================================
+2022-09-20 15:33:17 info: ======= ENV: development =======
+2022-09-20 15:33:17 info: 🚀 App listening on the port 3000
+2022-09-20 15:33:17 info: =================================
+2022-09-20 15:33:31 info: [0mGET / [32m200[0m 2.122 ms - 2[0m
+2022-09-20 15:33:34 info: [0mGET / [36m304[0m 0.773 ms - -[0m
+2022-09-20 15:33:35 info: [0mGET /docs [33m404[0m 2.537 ms - 143[0m
+2022-09-20 15:33:40 info: [0mGET / [32m200[0m 0.523 ms - 2[0m
+2022-09-20 15:33:40 info: [0mGET /api-docs/* [36m304[0m 1.656 ms - -[0m
+2022-09-20 15:33:46 info: [0mGET /api-docs/ [32m200[0m 1.863 ms - -[0m
+2022-09-20 15:33:48 info: [0mGET /api-docs/routes/ [32m200[0m 2.382 ms - -[0m
+2022-09-20 15:33:56 info: [0mGET /api-docs/routes/ [36m304[0m 0.549 ms - -[0m
+2022-09-20 15:33:57 info: [0mGET /api-docs/routes/ [32m200[0m 0.926 ms - -[0m
+2022-09-20 15:33:57 info: [0mGET /api-docs/ [36m304[0m 0.656 ms - -[0m
+2022-09-20 15:35:45 info: [0mGET /api-docs [36m301[0m 0.969 ms - 183[0m
+2022-09-20 15:35:45 info: [0mGET /api-docs/ [32m200[0m 0.828 ms - -[0m
+2022-09-20 15:35:45 info: [0mGET /api-docs/swagger-ui-init.js [32m200[0m 0.432 ms - -[0m
+2022-09-20 15:35:45 info: [0mGET /api-docs/swagger-ui.css [32m200[0m 3.222 ms - -[0m
+2022-09-20 15:35:45 info: [0mGET /api-docs/swagger-ui-standalone-preset.js [32m200[0m 2.260 ms - -[0m
+2022-09-20 15:35:45 info: [0mGET /api-docs/swagger-ui-bundle.js [32m200[0m 2.988 ms - -[0m
+2022-09-20 15:35:45 info: [0mGET /api-docs/favicon-32x32.png [32m200[0m 1.183 ms - 628[0m
+2022-09-20 15:35:59 error: [GET] /users >> StatusCode:: 500, Message:: 
+Invalid `this.users.findMany()` invocation in
+/Users/pacosw/Documents/practum/src/services/users.service.ts:11:46
+
+   8 public users = new PrismaClient().user;
+   9 
+  10 public async findAllUser(): Promise<User[]> {
+→ 11   const allUser: User[] = await this.users.findMany(
+Authentication failed against database server at `localhost`, the provided database credentials for `root` are not valid.
+
+Please make sure to provide valid database credentials for the database server at `localhost`.
+2022-09-20 15:35:59 info: [0mGET /users [31m500[0m 66.099 ms - 519[0m
