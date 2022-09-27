@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -43,48 +41,48 @@ model Process {
   Area Area @relation(fields: [areaId], references: [id])
   areaId Int @unique
 
-  entries EntriesOnProcess[]
-  outputs OutputsOnProcess[] 
+  // entries EntriesOnProcess[]
+  // outputs OutputsOnProcess[] 
 }
 
 // -------------------------------------------------------------------
 
-model Entry {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
-  description    String
+// model Entry {
+//   id       Int    @id @default(autoincrement())
+//   name    String @unique
+//   description    String
 
-  processes EntriesOnProcess[]
-}
+//   processes EntriesOnProcess[]
+// }
 
-// Many to Many relation table (process_entries)
-model EntriesOnProcess {
-  process Process @relation(fields: [processId], references: [id])
-  processId Int
-  entry Entry @relation(fields: [entryId], references: [id])
-  entryId Int
+// // Many to Many relation table (process_entries)
+// model EntriesOnProcess {
+//   process Process @relation(fields: [processId], references: [id])
+//   processId Int
+//   entry Entry @relation(fields: [entryId], references: [id])
+//   entryId Int
 
-  @@id([processId, entryId])
-}
+//   @@id([processId, entryId])
+// }
 
-// -------------------------------------------------------------------
+// // -------------------------------------------------------------------
 
-// Many to Many Relation Table (process_outputs)
-model OutputsOnProcess {
-  process Process @relation(fields: [processId], references: [id])
-  processId Int
-  output Output @relation(fields: [outputId], references: [id])
-  outputId Int
+// // Many to Many Relation Table (process_outputs)
+// model OutputsOnProcess {
+//   process Process @relation(fields: [processId], references: [id])
+//   processId Int
+//   output Output @relation(fields: [outputId], references: [id])
+//   outputId Int
 
-  @@id([processId, outputId])
-}
+//   @@id([processId, outputId])
+// }
 
-model Output {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
-  description    String
+// model Output {
+//   id       Int    @id @default(autoincrement())
+//   name    String @unique
+//   description    String
 
-  processes OutputsOnProcess[]
-}
+//   processes OutputsOnProcess[]
+// }
 
-// -------------------------------------------------------------------
+// // -------------------------------------------------------------------
