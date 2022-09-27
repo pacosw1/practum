@@ -3,6 +3,8 @@ tags:
   description: users API
 - name: areas
   description: areas API
+- name: groups
+  description: groups API
 
 paths:
   /areas:
@@ -102,7 +104,102 @@ paths:
         500:
           description: 'Server Error'
 
+  /groups:
+    get:
+      tags:
+      - groups
+      summary: Find All Groups
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+    post:
+      tags:
+      - groups
+      summary: Add Group
+      parameters:
+      - name: body
+        in: body
+        description: group Data
+        required: true
+        schema:
+          $ref: '#/definitions/groups'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
 
+  # [GET] areas/id
+  /groups/{id}:
+    get:
+      tags:
+      - groups
+      summary: Find Group By Id
+      parameters:
+      - name: id
+        in: path
+        description: Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [PUT] users/id
+    put:
+      tags:
+      - groups
+      summary: Update Group By Id
+      parameters:
+      - name: id
+        in: path
+        description: Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: group Data
+        required: true
+        schema:
+          $ref: '#/definitions/groups'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [DELETE] users/id
+    delete:
+      tags:
+      - groups
+      summary: Delete Groups By Id
+      parameters:
+      - name: id
+        in: path
+        description: group Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
 
 
 
@@ -218,6 +315,14 @@ definitions:
       name:
         type: string
         description: "Name of the area"
+  groups:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: "Name of the group"
   users:
     type: object
     required:
