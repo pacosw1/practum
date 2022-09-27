@@ -103,6 +103,129 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
+          
+  /process:
+    get:
+      tags:
+      - processes
+      summary: Find All processes
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+    post:
+      tags:
+      - processes
+      summary: Add process
+      parameters:
+      - name: body
+        in: body
+        description: process Data
+        required: true
+        schema:
+          $ref: '#/definitions/processes'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] process/id
+  /process/filter/{areaId}&{groupId}:
+    get:
+      tags:
+      - processes
+      summary: Find processes By area & group Id
+      parameters:
+      - name: areaId
+        in: path
+        description: area id
+        required: true
+        type: integer
+      - name: groupId
+        in: path
+        description: group id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] process/id
+  /process/{id}:
+    get:
+      tags:
+      - processes
+      summary: Find process By Id
+      parameters:
+      - name: id
+        in: path
+        description: Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [PUT] process/id
+    put:
+      tags:
+      - processes
+      summary: Update process By Id
+      parameters:
+      - name: id
+        in: path
+        description: Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: group Data
+        required: true
+        schema:
+          $ref: '#/definitions/groups'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [DELETE] process/id
+    delete:
+      tags:
+      - processes
+      summary: Delete process By Id
+      parameters:
+      - name: id
+        in: path
+        description: group Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
 
   /groups:
     get:
@@ -200,6 +323,8 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
+
+
 
 
 
@@ -323,6 +448,22 @@ definitions:
       name:
         type: string
         description: "Name of the group"
+  processes:
+    type: object
+    required:
+      - name
+      - areaId
+      - groupId
+    properties:
+      name:
+        type: string
+        description: "Name of the process"
+      areaId:
+        type: string
+        description: "area id related to process"
+      groupId:
+        type: string
+        description: "group id related to process"
   users:
     type: object
     required:
