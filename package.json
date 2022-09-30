@@ -1,6 +1,6 @@
 {
   "name": "prisma",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "TypeScript + Prisma + MySQL + Express API Server",
   "author": "",
   "license": "ISC",
