@@ -7,6 +7,38 @@ tags:
   description: groups API
 
 paths:
+  /auth/signup:
+    post:
+      summary: Create a new account
+      parameters:
+      - name: body
+        in: body
+        description: "Sign up body reqs"
+        required: true
+        schema:
+          $ref: '#/definitions/users'
+      responses:
+        200:
+          description: "OK"
+  /auth/login:
+    post:
+      summary: Login to existing account
+      parameters:
+      - name: body
+        in: body
+        description: "Login body reqs"
+        required: true
+        schema:
+          $ref: '#/definitions/users'
+      responses:
+        200:
+          description: "OK"
+  /auth/logout:
+    post:
+      summary: Create a new account
+      responses:
+        200:
+          description: "OK"
   /areas:
     get:
       tags:
