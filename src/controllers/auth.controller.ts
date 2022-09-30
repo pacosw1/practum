@@ -10,9 +10,16 @@ class AuthController {
   public signUp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userData: CreateUserDto = req.body;
-      const signUpUserData: User = await this.authService.signup(userData);
+      const _ = await this.authService.signup(userData);
 
-      res.status(201).json({ data: signUpUserData, message: 'signup' });
+      const { cookie, findUser } = await this.authService.login(userData);
+
+      res.setHeader('Set-Cookie', [cookie]);
+      res.status(200).json({ data: {
+        id: findUser.id,
+        email: findUser.email
+      }, message: 'signup + login' });
+
     } catch (error) {
       next(error);
     }
@@ -24,7 +31,10 @@ class AuthController {
       const { cookie, findUser } = await this.authService.login(userData);
 
       res.setHeader('Set-Cookie', [cookie]);
-      res.status(200).json({ data: findUser, message: 'login' });
+      res.status(200).json({ data: {
+        id: findUser.id,
+        email: findUser.email
+      }, message: 'login' });
     } catch (error) {
       next(error);
     }

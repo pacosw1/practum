@@ -3,11 +3,14 @@ import { Routes } from '@interfaces/routes.interface';
 import validationMiddleware from '@middlewares/validation.middleware';
 import AreasController from '@/controllers/areas.controller';
 import { CreateAreaDto } from '@/dtos/areas.dto';
+import authMiddleware from '@/middlewares/auth.middleware';
 
 class AreasRoute implements Routes {
   public path = '/areas';
   public router = Router();
   public controller = new AreasController();
+
+  
 
   constructor() {
     this.initializeRoutes();
