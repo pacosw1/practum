@@ -19,7 +19,7 @@ To perform database migrations run `npx prisma db push`
 
 # Running the local server
 
-To run the local server, run `npmrun dev`
+To run the local server, run `npm run dev`
 
 For more commands, check the scripts section inside `package.json` in the root directory
 
