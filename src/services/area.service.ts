@@ -14,7 +14,7 @@ class AreaService {
   }
 
   public async getAreaGivenId(id: number): Promise<Area> {
-    if (isEmpty(id)) throw new HttpException(400, "id is empty");
+    if (isEmpty(id)) throw new HttpException(400, 'id is empty');
 
     const findArea: Area = await this.areas.findUnique({ where: { id: id } });
     if (!findArea) throw new HttpException(409, "Area doesn't exist");
@@ -23,7 +23,7 @@ class AreaService {
   }
 
   public async createArea(areaData: CreateAreaDto): Promise<Area> {
-    if (isEmpty(areaData)) throw new HttpException(400, "userData is empty");
+    if (isEmpty(areaData)) throw new HttpException(400, 'userData is empty');
 
     const findArea: Area = await this.areas.findUnique({ where: { name: areaData.name } });
     if (findArea) throw new HttpException(409, `Area with title ${areaData.name} already exists`);
@@ -33,7 +33,7 @@ class AreaService {
   }
 
   public async updateArea(id: number, data: CreateAreaDto): Promise<Area> {
-    if (isEmpty(data)) throw new HttpException(400, "userData is empty");
+    if (isEmpty(data)) throw new HttpException(400, 'userData is empty');
 
     const findArea: Area = await this.areas.findUnique({ where: { id: id } });
     if (!findArea) throw new HttpException(409, "User doesn't exist");
