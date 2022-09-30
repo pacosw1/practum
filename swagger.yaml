@@ -1,8 +1,111 @@
 tags:
 - name: users
   description: users API
+- name: areas
+  description: areas API
 
 paths:
+  /areas:
+    get:
+      tags:
+      - areas
+      summary: Find All Areas
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+    post:
+      tags:
+      - areas
+      summary: Add Area
+      parameters:
+      - name: body
+        in: body
+        description: area Data
+        required: true
+        schema:
+          $ref: '#/definitions/areas'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+  # [GET] areas/id
+  /areas/{id}:
+    get:
+      tags:
+      - areas
+      summary: Find Area By Id
+      parameters:
+      - name: id
+        in: path
+        description: Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [PUT] users/id
+    put:
+      tags:
+      - areas
+      summary: Update Area By Id
+      parameters:
+      - name: id
+        in: path
+        description: Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: area Data
+        required: true
+        schema:
+          $ref: '#/definitions/areas'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+# [DELETE] users/id
+    delete:
+      tags:
+      - areas
+      summary: Delete Area By Id
+      parameters:
+      - name: id
+        in: path
+        description: area Id
+        required: true
+        type: integer
+      responses:
+        200:
+          description: 'OK'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+
+
+
+
 # [GET] users
   /users:
     get:
@@ -103,8 +206,18 @@ paths:
         500:
           description: 'Server Error'
 
+  
+
 # definitions
 definitions:
+  areas:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: "Name of the area"
   users:
     type: object
     required:
