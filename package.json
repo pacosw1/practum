@@ -5,9 +5,10 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node dist/server.js",
-    "dev": "cross-env NODE_ENV=development nodemon",
+    "start": "npm run build && npm run primsa:push && cross-env NODE_ENV=production node dist/server.js",
+    "dev": "npm run prisma:push && cross-env NODE_ENV=development nodemon",
     "build": "swc src -d dist --source-maps --copy-files",
+    "prisma:push": "npx prisma db push",
     "build:tsc": "tsc && tsc-alias",
     "test": "jest --forceExit --detectOpenHandles",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
@@ -16,6 +17,7 @@
     "prisma:migrate": "prisma migrate dev --preview-feature",
     "prisma:generate": "prisma generate",
     "deploy:prod": "npm run build && pm2 start ecosystem.config.js --only prod",
+
     "deploy:dev": "pm2 start ecosystem.config.js --only dev"
   },
   "prisma": {
