@@ -7,3 +7,4 @@ src/logs/debug/2022-09-26.log
 src/logs/error/.6a219778cb273916ec7fbd2555c93962f806c372-audit.json
 src/logs/error/2022-09-26.log
 .DS_Store
+*.json

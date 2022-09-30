@@ -4,9 +4,10 @@ import IndexRoute from '@routes/index.route';
 import UsersRoute from '@routes/users.route';
 import validateEnv from '@utils/validateEnv';
 import AreasRoute from './routes/areas.route';
+import GroupsRoute from './routes/groups.route';
 
 validateEnv();
 
-const app = new App([new IndexRoute(), new UsersRoute(), new AuthRoute(), new AreasRoute()]);
+const app = new App([new IndexRoute(), new UsersRoute(), new AuthRoute(), new AreasRoute(), new GroupsRoute()]);
 
 app.listen();
