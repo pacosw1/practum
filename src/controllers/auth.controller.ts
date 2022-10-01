@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, response, Response } from 'express';
 import { User } from '@prisma/client';
 import { CreateUserDto } from '@dtos/users.dto';
 import { RequestWithUser } from '@interfaces/auth.interface';
@@ -24,6 +24,18 @@ class AuthController {
       next(error);
     }
   };
+
+  public access = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : "");
+      let response = await this.authService.access(Authorization)
+      res.status(200).json({data: response, message: "auth check"})
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  
 
   public logIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

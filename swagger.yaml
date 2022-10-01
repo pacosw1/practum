@@ -7,6 +7,13 @@ tags:
   description: groups API
 
 paths:
+
+  /auth:
+    get:
+      summary: "Check for auth token"
+      response: 
+        200:
+          description: "OK"
   /auth/signup:
     post:
       summary: Create a new account

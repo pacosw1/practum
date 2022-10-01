@@ -1,5 +1,5 @@
 import { compare, hash } from 'bcrypt';
-import { sign } from 'jsonwebtoken';
+import { sign, decode, verify } from 'jsonwebtoken';
 import { PrismaClient, User } from '@prisma/client';
 import { SECRET_KEY } from '@config';
 import { CreateUserDto } from '@dtos/users.dto';
@@ -20,6 +20,38 @@ class AuthService {
     const createUserData: Promise<User> = this.users.create({ data: { ...userData, password: hashedPassword } });
 
     return createUserData;
+  }
+
+  public async access(token: string): Promise<{ authenticated: Boolean, data: {id: number, email: string}}> {
+    try {
+        const secretKey: string = SECRET_KEY;
+        const verificationResponse = (await verify(token, secretKey)) as DataStoredInToken;
+        const userId = verificationResponse.id;
+  
+        const users = new PrismaClient().user;
+        const findUser = await users.findUnique({ where: { id: Number(userId) } });
+  
+        if (findUser) {
+          return {
+            authenticated: true,
+            data: {
+              email: findUser.email,
+              id: findUser.id
+            }
+          }
+        } else {
+          return {
+            authenticated: false,
+            data: null
+          }
+        }
+      }
+        catch(err) {
+          return {
+            authenticated: false,
+            data: null
+          }
+        }
   }
 
   public async login(userData: CreateUserDto): Promise<{ cookie: string; findUser: User }> {
