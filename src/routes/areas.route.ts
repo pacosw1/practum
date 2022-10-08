@@ -19,9 +19,9 @@ class AreasRoute implements Routes {
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.controller.getAreas);
     this.router.get(`${this.path}/:id(\\d+)`, this.controller.getAreaGivenId);
-    this.router.post(`${this.path}`, validationMiddleware(CreateAreaDto, 'body'), this.controller.createArea);
-    this.router.put(`${this.path}/:id(\\d+)`, validationMiddleware(CreateAreaDto, 'body', true), this.controller.updateArea);
-    this.router.delete(`${this.path}/:id(\\d+)`, this.controller.deleteArea);
+    this.router.post(`${this.path}`, authMiddleware, validationMiddleware(CreateAreaDto, 'body'), this.controller.createArea);
+    this.router.put(`${this.path}/:id(\\d+)`, authMiddleware, validationMiddleware(CreateAreaDto, 'body', true), this.controller.updateArea);
+    this.router.delete(`${this.path}/:id(\\d+)`, authMiddleware, this.controller.deleteArea);
   }
 }
 
