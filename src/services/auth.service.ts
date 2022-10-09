@@ -6,6 +6,12 @@ import { CreateUserDto } from '@dtos/users.dto';
 import { HttpException } from '@exceptions/HttpException';
 import { DataStoredInToken, TokenData } from '@interfaces/auth.interface';
 import { isEmpty } from '@utils/util';
+import { resolve } from 'path';
+
+// class TokenData {
+//   expiresIn: number;
+//   token: string;
+// }
 
 class AuthService {
   public users = new PrismaClient().user;
@@ -22,39 +28,38 @@ class AuthService {
     return createUserData;
   }
 
-  public async access(token: string): Promise<{ authenticated: Boolean, data: {id: number, email: string}}> {
+  public async access(token: string): Promise<{ authenticated: Boolean; data: { id: number; email: string } }> {
     try {
-        const secretKey: string = SECRET_KEY;
-        const verificationResponse = (await verify(token, secretKey)) as DataStoredInToken;
-        const userId = verificationResponse.id;
-  
-        const users = new PrismaClient().user;
-        const findUser = await users.findUnique({ where: { id: Number(userId) } });
-  
-        if (findUser) {
-          return {
-            authenticated: true,
-            data: {
-              email: findUser.email,
-              id: findUser.id
-            }
-          }
-        } else {
-          return {
-            authenticated: false,
-            data: null
-          }
-        }
+      const secretKey: string = SECRET_KEY;
+      const verificationResponse = (await verify(token, secretKey)) as DataStoredInToken;
+      const userId = verificationResponse.id;
+
+      const users = new PrismaClient().user;
+      const findUser = await users.findUnique({ where: { id: Number(userId) } });
+
+      if (findUser) {
+        return {
+          authenticated: true,
+          data: {
+            email: findUser.email,
+            id: findUser.id,
+          },
+        };
+      } else {
+        return {
+          authenticated: false,
+          data: null,
+        };
       }
-        catch(err) {
-          return {
-            authenticated: false,
-            data: null
-          }
-        }
+    } catch (err) {
+      return {
+        authenticated: false,
+        data: null,
+      };
+    }
   }
 
-  public async login(userData: CreateUserDto): Promise<{ cookie: string; findUser: User }> {
+  public async login(userData: CreateUserDto): Promise<{ tokenData: TokenData; findUser: User }> {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findUnique({ where: { email: userData.email } });
@@ -64,9 +69,8 @@ class AuthService {
     if (!isPasswordMatching) throw new HttpException(409, 'Password is not matching');
 
     const tokenData = this.createToken(findUser);
-    const cookie = this.createCookie(tokenData);
 
-    return { cookie, findUser };
+    return { tokenData, findUser };
   }
 
   public async logout(userData: User): Promise<User> {
@@ -84,10 +88,6 @@ class AuthService {
     const expiresIn: number = 60 * 60;
 
     return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
-  }
-
-  public createCookie(tokenData: TokenData): string {
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
   }
 }
 
