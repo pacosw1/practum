@@ -19,6 +19,8 @@ To perform database migrations run `npx prisma db push`
 
 # Running the local server
 
+Note: Auth will not work locally without https url
+
 To run the local server, run `npm run dev`
 
 For more commands, check the scripts section inside `package.json` in the root directory
