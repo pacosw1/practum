@@ -12,14 +12,22 @@ class AuthController {
       const userData: CreateUserDto = req.body;
       const _ = await this.authService.signup(userData);
 
-      const { cookie, findUser } = await this.authService.login(userData);
+      const { tokenData, findUser } = await this.authService.login(userData);
 
-      res.setHeader('Set-Cookie', [cookie]);
-      res.status(200).json({ data: {
-        id: findUser.id,
-        email: findUser.email
-      }, message: 'signup + login' });
+      res.cookie('Authorization', tokenData.token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: tokenData.expiresIn,
+        sameSite: 'none',
+      });
 
+      res.status(200).json({
+        data: {
+          id: findUser.id,
+          email: findUser.email,
+        },
+        message: 'signup + login',
+      });
     } catch (error) {
       next(error);
     }
@@ -27,26 +35,33 @@ class AuthController {
 
   public access = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : "");
-      let response = await this.authService.access(Authorization)
-      res.status(200).json({data: response, message: "auth check"})
+      const Authorization = req.cookies['Authorization'] || (req.header('Authorization') ? req.header('Authorization').split('Bearer ')[1] : '');
+      const response = await this.authService.access(Authorization);
+      res.status(200).json({ data: response, message: 'auth check' });
     } catch (error) {
       next(error);
     }
   };
 
-  
-
   public logIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userData: CreateUserDto = req.body;
-      const { cookie, findUser } = await this.authService.login(userData);
+      const { tokenData, findUser } = await this.authService.login(userData);
 
-      res.setHeader('Set-Cookie', [cookie]);
-      res.status(200).json({ data: {
-        id: findUser.id,
-        email: findUser.email
-      }, message: 'login' });
+      res.cookie('Authorization', tokenData.token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: tokenData.expiresIn,
+        sameSite: 'none',
+      });
+
+      res.status(200).json({
+        data: {
+          id: findUser.id,
+          email: findUser.email,
+        },
+        message: 'login',
+      });
     } catch (error) {
       next(error);
     }
@@ -57,7 +72,13 @@ class AuthController {
       const userData: User = req.user;
       const logOutUserData: User = await this.authService.logout(userData);
 
-      res.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
+      res.cookie('Authorization', '', {
+        httpOnly: true,
+        secure: true,
+        maxAge: 0,
+        sameSite: 'none',
+      });
+
       res.status(200).json({ data: logOutUserData, message: 'logout' });
     } catch (error) {
       next(error);
