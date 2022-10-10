@@ -55,13 +55,21 @@ class AuthController {
         sameSite: 'none',
       });
 
-      res.status(200).json({
-        data: {
-          id: findUser.id,
-          email: findUser.email,
-        },
-        message: 'login',
-      });
+      res
+        .status(200)
+        .cookie('Authorization', tokenData.token, {
+          httpOnly: true,
+          secure: true,
+          maxAge: tokenData.expiresIn,
+          sameSite: 'none',
+        })
+        .json({
+          data: {
+            id: findUser.id,
+            email: findUser.email,
+          },
+          message: 'login',
+        });
     } catch (error) {
       next(error);
     }
