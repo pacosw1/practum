@@ -11,6 +11,16 @@ export class CreateProcessDto {
   public groupId: number;
 }
 
+export class CreateEntryExitDto {
+
+  @IsString()
+  public name: string;
+
+  @IsString()
+  public description: string;
+
+}
+
 export class GetFilteredProcessesDto {
   @IsNumberString()
   public areaId: number;
