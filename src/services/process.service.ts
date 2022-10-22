@@ -34,6 +34,11 @@ class ProcessService {
             output: true
           }
         },
+        tools: {
+          include: {
+            tool: true
+          }
+        },
     } });
 
     if (!findProcess) throw new HttpException(409, "Area doesn't exist");
@@ -90,25 +95,25 @@ class ProcessService {
         }
     }))
 
-    // let connectTools = Array.from(data.existingOutputs.map(id => {
-    //   return {
-    //     output: {
-    //       connect: {
-    //         id: id
-    //       }
-    //     }
-    //   }
-    // }))
+    let connectTools = Array.from(data.existingTools.map(id => {
+      return {
+        tool: {
+          connect: {
+            id: id
+          }
+        }
+      }
+    }))
 
-    // let newTools = Array.from(data.newOutputs.map(newOutput => {
-    //     return {
-    //       output: {
-    //         create: {
-    //           ...newOutput
-    //         }
-    //       }
-    //     }
-    // }))
+    let newTools = Array.from(data.newTools.map(newTool => {
+        return {
+          tool: {
+            create: {
+              ...newTool
+            }
+          }
+        }
+    }))
 
 
     let finalData = {
@@ -127,12 +132,12 @@ class ProcessService {
           ...connectOutputs
         ]
       },
-      // tools: {
-      //   create: [
-      //     ...newEntries,
-      //     ...connectEntries
-      //   ]
-      // }
+      tools: {
+        create: [
+          ...newTools,
+          ...connectTools
+        ]
+      }
     }
 
     // @ts-ignore
@@ -165,6 +170,10 @@ class ProcessService {
     })
 
     let oldOutputs = await new PrismaClient().outputsOnProcess.findMany({
+      where: { processId: id}
+    })
+
+    let oldTools = await new PrismaClient().toolsOnProcess.findMany({
       where: { processId: id}
     })
 
@@ -220,6 +229,41 @@ class ProcessService {
       }
     }
 
+
+    let oldToolSet = new Set()
+    let updatedTools = new Set()
+    let disconnectTools = []
+    let connectTools = []
+
+
+    for (let tool of data.existingTools) {
+      updatedTools.add(tool)
+    }
+
+    for (let tool of oldTools) {
+      oldToolSet.add(tool.toolId)
+      
+      if (!updatedTools.has(tool.toolId)) {
+        disconnectTools.push(tool.toolId)
+      }
+    }
+
+    for (let tool of data.existingTools) {
+      if (!oldToolSet.has(tool)) {
+        connectTools.push({tool: {connect: {id: tool}}})
+      }
+    }
+
+    let newTools = Array.from(data.newTools.map(newTool => {
+      return {
+        tool: {
+          create: {
+            ...newTool
+          }
+        }
+      }
+  }))
+
     let newEntries = Array.from(data.newEntries.map(newEntry => {
         return {
           entry: {
@@ -229,7 +273,6 @@ class ProcessService {
           }
         }
     }))
-
 
     let newOutputs = Array.from(data.newOutputs.map(newOutput => {
         return {
@@ -260,13 +303,23 @@ class ProcessService {
           ...connectOutputs
         ],
       },
+      tools: {
+        create: [
+          ...newTools,
+          ...connectTools
+        ],
+      },
     }
 
     let entryClient = new PrismaClient().entriesOnProcess
     let outputClient = new PrismaClient().outputsOnProcess
+    let toolClient = new PrismaClient().toolsOnProcess
+
 
     let deleteEntries = await entryClient.deleteMany({where: {processId: id, entryId: {in: disconnectEntries}}})
     let deleteOutputs = await outputClient.deleteMany({where: {processId: id, outputId: {in: disconnectOutputs}}})
+    let deleteTools = await toolClient.deleteMany({where: {processId: id, toolId: {in: disconnectTools}}})
+
 
     const newProcess = await this.processes.update({ where: { id: id }, data: { ...finalData} });
     return newProcess;

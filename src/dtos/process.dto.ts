@@ -1,4 +1,4 @@
-import { Entry, Output } from '@prisma/client';
+import { Entry, Output, Tool } from '@prisma/client';
 import { IsArray, isArray, IsInt, IsNumberString, IsString } from 'class-validator';
 
 export class CreateProcessDto {
@@ -22,6 +22,12 @@ export class CreateProcessDto {
 
   @IsArray()
   public existingOutputs: [number]
+
+  @IsArray()
+  public newTools: [Tool]
+
+  @IsArray()
+  public existingTools: [number]
 
 }
 
