@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import ProcessService from '@/services/process.service';
-import { Process } from '@prisma/client';
+import { Entry, Process, EntriesOnProcess, } from '@prisma/client';
 import { CreateProcessDto } from '@/dtos/process.dto';
 
 class ProcessController {
@@ -30,7 +30,7 @@ class ProcessController {
   public getGivenId = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const id = Number(req.params.id);
-      const findArea: Process = await this.service.getGivenId(id);
+      const findArea = await this.service.getGivenId(id);
 
       res.status(200).json({ data: findArea, message: 'findOne' });
     } catch (error) {

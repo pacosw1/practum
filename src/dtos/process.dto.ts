@@ -1,4 +1,5 @@
-import { IsInt, IsNumberString, IsString } from 'class-validator';
+import { Entry, Output } from '@prisma/client';
+import { IsArray, isArray, IsInt, IsNumberString, IsString } from 'class-validator';
 
 export class CreateProcessDto {
   @IsString()
@@ -9,6 +10,19 @@ export class CreateProcessDto {
 
   @IsNumberString()
   public groupId: number;
+
+  @IsArray()
+  public newEntries: [Entry]
+
+  @IsArray()
+  public existingEntries: [number]
+
+  @IsArray()
+  public newOutputs: [Output]
+
+  @IsArray()
+  public existingOutputs: [number]
+
 }
 
 export class CreateEntryExitDto {
