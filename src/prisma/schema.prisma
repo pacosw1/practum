@@ -43,6 +43,7 @@ model Process {
 
   entries EntriesOnProcess[]
   outputs OutputsOnProcess[] 
+  tools ToolsOnProcess[]
 }
 
 // -------------------------------------------------------------------
@@ -86,3 +87,20 @@ model Output {
 }
 
 // // -------------------------------------------------------------------
+
+model ToolsOnProcess {
+  process Process @relation(fields: [processId], references: [id])
+  processId Int
+  tool Tool @relation(fields: [toolId], references: [id])
+  toolId Int
+
+  @@id([processId, toolId])
+}
+
+model Tool {
+  id       Int    @id @default(autoincrement())
+  name    String @unique
+  description    String
+
+  processes ToolsOnProcess[]
+}

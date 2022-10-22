@@ -46,6 +46,124 @@ paths:
       responses:
         200:
           description: "OK"
+
+  /entries:
+    get:
+      tags:
+      - entries
+      summary: Find All Entries
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+    post:
+      tags:
+      - entries
+      summary: Add Entries
+      parameters:
+      - name: body
+        in: body
+        description: entry Data
+        required: true
+        schema:
+          $ref: '#/definitions/entries'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+    # [PUT] users/id
+    put:
+      tags:
+      - entries
+      summary: Update Entry By Id
+      parameters:
+      - name: id
+        in: path
+        description: entry Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: user Data
+        required: true
+        schema:
+          $ref: '#/definitions/entries'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+
+  /outputs:
+    get:
+      tags:
+      - outputs
+      summary: Find All Outputs
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+    post:
+      tags:
+      - outputs
+      summary: Add Entries
+      parameters:
+      - name: body
+        in: body
+        description: entry Data
+        required: true
+        schema:
+          $ref: '#/definitions/outputs'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+# [PUT] outputs/id
+    put:
+      tags:
+      - outputs
+      summary: Update Output By Id
+      parameters:
+      - name: id
+        in: path
+        description: output Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: output Data
+        required: true
+        schema:
+          $ref: '#/definitions/outputs'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+
+
+  # [GET] areas/id
   /areas:
     get:
       tags:
@@ -232,10 +350,10 @@ paths:
         type: integer
       - name: body
         in: body
-        description: group Data
+        description: process Data
         required: true
         schema:
-          $ref: '#/definitions/groups'
+          $ref: '#/definitions/processes'
       responses:
         200:
           description: 'OK'
@@ -363,10 +481,6 @@ paths:
         500:
           description: 'Server Error'
 
-
-
-
-
 # [GET] users
   /users:
     get:
@@ -471,6 +585,28 @@ paths:
 
 # definitions
 definitions:
+  entries:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: "Entry name"
+      description:
+        type: string
+        description: "Entry description"
+  outputs:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: "Output name"
+      description:
+        type: string
+        description: "Output description"
   areas:
     type: object
     required:
@@ -503,6 +639,26 @@ definitions:
       groupId:
         type: string
         description: "group id related to process"
+      newEntries:
+        type: array
+        items:
+          $ref: '#/definitions/entries'
+        description: "[Entry] array with entry objects"
+      existingEntries:
+        type: array
+        items:
+          type: integer
+        description: "[Int] array with existing category ids"
+      newOutputs:
+        type: array
+        items:
+          $ref: '#/definitions/outputs'
+        description: "[Output] array with output objects"
+      existingOutputs:
+        type: array
+        items:
+          type: integer
+        description: "[Int] array with existing output ids"
   users:
     type: object
     required:
