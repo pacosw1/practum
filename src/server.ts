@@ -8,6 +8,7 @@ import EntriesRoute from './routes/entries.route';
 import GroupsRoute from './routes/groups.route';
 import OutputsRoute from './routes/outputs.route';
 import ProcessRoute from './routes/process.route';
+import ToolsRoute from './routes/tools.route';
 
 validateEnv();
 
@@ -19,7 +20,8 @@ const app = new App([
     new GroupsRoute(), 
     new ProcessRoute(),
     new EntriesRoute(),
-    new OutputsRoute()
+    new OutputsRoute(),
+    new ToolsRoute()
 ]);
 
 app.listen();

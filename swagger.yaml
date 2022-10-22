@@ -5,17 +5,24 @@ tags:
   description: areas API
 - name: groups
   description: groups API
+- name: authentication
+  description: Auth API
+
 
 paths:
 
   /auth:
     get:
+      tags:
+      - authentication
       summary: "Check for auth token"
       response: 
         200:
           description: "OK"
   /auth/signup:
     post:
+      tags:
+      - authentication
       summary: Create a new account
       parameters:
       - name: body
@@ -29,6 +36,8 @@ paths:
           description: "OK"
   /auth/login:
     post:
+      tags:
+      - authentication
       summary: Login to existing account
       parameters:
       - name: body
@@ -42,6 +51,8 @@ paths:
           description: "OK"
   /auth/logout:
     post:
+      tags:
+      - authentication
       summary: Create a new account
       responses:
         200:
@@ -77,7 +88,7 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-    # [PUT] users/id
+  /entries/{id}:
     put:
       tags:
       - entries
@@ -105,6 +116,64 @@ paths:
           description: 'Server Error'
 
 
+  /tools:
+    get:
+      tags:
+      - tools
+      summary: Find All Tools
+      responses:
+        200:
+          description: 'OK'
+        500:
+          description: 'Server Error'
+    post:
+      tags:
+      - tools
+      summary: Add Tools
+      parameters:
+      - name: body
+        in: body
+        description: tool Data
+        required: true
+        schema:
+          $ref: '#/definitions/tools'
+      responses:
+        201:
+          description: 'Created'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+  /tools/{id}:
+    put:
+      tags:
+      - tools
+      summary: Update Tool By Id
+      parameters:
+      - name: id
+        in: path
+        description: tool Id
+        required: true
+        type: integer
+      - name: body
+        in: body
+        description: tool Data
+        required: true
+        schema:
+          $ref: '#/definitions/tools'
+      responses:
+        200:
+          description: 'OK'
+        400:
+          description: 'Bad Request'
+        409:
+          description: 'Conflict'
+        500:
+          description: 'Server Error'
+# end
+
   /outputs:
     get:
       tags:
@@ -118,11 +187,11 @@ paths:
     post:
       tags:
       - outputs
-      summary: Add Entries
+      summary: Add Outputs
       parameters:
       - name: body
         in: body
-        description: entry Data
+        description: Output Data
         required: true
         schema:
           $ref: '#/definitions/outputs'
@@ -135,7 +204,7 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-# [PUT] outputs/id
+  /outputs/{id}:
     put:
       tags:
       - outputs
@@ -596,6 +665,17 @@ definitions:
       description:
         type: string
         description: "Entry description"
+  tools:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: "Tool name"
+      description:
+        type: string
+        description: "Tool description"
   outputs:
     type: object
     required:
@@ -659,6 +739,16 @@ definitions:
         items:
           type: integer
         description: "[Int] array with existing output ids"
+      newTools:
+        type: array
+        items:
+          $ref: '#/definitions/tools'
+        description: "[Tool] array with tool objects"
+      existingTools:
+        type: array
+        items:
+          type: integer
+        description: "[Int] array with existing tool ids"
   users:
     type: object
     required:
