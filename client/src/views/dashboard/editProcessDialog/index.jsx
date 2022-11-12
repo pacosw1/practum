@@ -585,16 +585,17 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               <Typography variant="caption" display="block" gutterBottom>
                 Herramientas existentes:
               </Typography>
+
               <FormControl>
                 <Select
                   multiple
-                  value={process.existingTools.map(item => item.id)}
+                  value={process.existingTools.map(entry => entry.id)}
                   onChange={handleChangeTool}
                   renderValue={selected => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {selected.map(id => {
-                        let item = process.existingTools.find(item => item.id === id);
-                        return <Chip key={id} label={item.name} />;
+                        let entry = process.existingTools.find(entry => entry.id === id);
+                        return <Chip key={id} label={entry.name} />;
                       })}
                     </Box>
                   )}

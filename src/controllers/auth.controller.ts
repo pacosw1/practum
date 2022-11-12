@@ -15,7 +15,7 @@ class AuthController {
       const { tokenData, findUser } = await this.authService.login(userData);
 
       res.cookie('Authorization', tokenData.token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: true,
         maxAge: tokenData.expiresIn,
         sameSite: 'none',
@@ -49,7 +49,7 @@ class AuthController {
       const { tokenData, findUser } = await this.authService.login(userData);
 
       res.cookie('Authorization', tokenData.token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: true,
         maxAge: tokenData.expiresIn,
         sameSite: 'none',
@@ -58,7 +58,7 @@ class AuthController {
       res
         .status(200)
         .cookie('Authorization', tokenData.token, {
-          httpOnly: false,
+          httpOnly: true,
           secure: true,
           maxAge: tokenData.expiresIn,
           sameSite: 'none',
@@ -81,7 +81,7 @@ class AuthController {
       const logOutUserData: User = await this.authService.logout(userData);
 
       res.cookie('Authorization', '', {
-        httpOnly: false,
+        httpOnly: true,
         secure: true,
         maxAge: 0,
         sameSite: 'none',
