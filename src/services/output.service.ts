@@ -7,7 +7,11 @@ class OutputService {
   public exits = new PrismaClient().output;
 
   public async getAll(): Promise<Output[]> {
-    const all: Output[] = await this.exits.findMany();
+    const all: Output[] = await this.exits.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
     return all;
   }
 
@@ -40,7 +44,6 @@ class OutputService {
     const deleteEntry = await this.exits.delete({ where: { id: id } });
     return deleteEntry;
   }
-
 }
 
 export default OutputService;

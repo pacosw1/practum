@@ -7,7 +7,11 @@ class ToolsService {
   public exits = new PrismaClient().tool;
 
   public async getAll(): Promise<Tool[]> {
-    const all: Tool[] = await this.exits.findMany();
+    const all: Tool[] = await this.exits.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
     return all;
   }
 
@@ -40,7 +44,6 @@ class ToolsService {
     const deleteEntry = await this.exits.delete({ where: { id: id } });
     return deleteEntry;
   }
-
 }
 
 export default ToolsService;

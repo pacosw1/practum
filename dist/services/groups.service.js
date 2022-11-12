@@ -39,7 +39,11 @@ function _objectSpread(target) {
 }
 let GroupService = class GroupService {
     async getAll() {
-        const allGroups = await this.groups.findMany();
+        const allGroups = await this.groups.findMany({
+            orderBy: {
+                id: 'asc'
+            }
+        });
         return allGroups;
     }
     async getGivenId(id) {

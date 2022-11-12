@@ -1,67 +1,65 @@
 tags:
-- name: users
-  description: users API
-- name: areas
-  description: areas API
-- name: groups
-  description: groups API
-- name: authentication
-  description: Auth API
-
+  - name: users
+    description: users API
+  - name: areas
+    description: areas API
+  - name: groups
+    description: groups API
+  - name: authentication
+    description: Auth API
 
 paths:
-
-  /auth:
+  /api/auth:
     get:
       tags:
-      - authentication
-      summary: "Check for auth token"
-      response: 
+        - authentication
+      summary: 'Check for auth token'
+      response:
         200:
-          description: "OK"
-  /auth/signup:
+          description: 'OK'
+  /api/auth/signup:
     post:
       tags:
-      - authentication
+        - authentication
       summary: Create a new account
       parameters:
-      - name: body
-        in: body
-        description: "Sign up body reqs"
-        required: true
-        schema:
-          $ref: '#/definitions/users'
+        - name: body
+          in: body
+          description: 'Sign up body reqs'
+          required: true
+          schema:
+            $ref: '#/definitions/users'
       responses:
         200:
-          description: "OK"
-  /auth/login:
+          description: 'OK'
+  /api/auth/login:
     post:
       tags:
-      - authentication
+        - authentication
       summary: Login to existing account
       parameters:
-      - name: body
-        in: body
-        description: "Login body reqs"
-        required: true
-        schema:
-          $ref: '#/definitions/users'
+        - name: body
+          in: body
+          description: 'Login body reqs'
+          required: true
+          schema:
+            $ref: '#/definitions/users'
       responses:
         200:
-          description: "OK"
-  /auth/logout:
+          description: 'OK'
+  /api/auth/logout:
     post:
       tags:
-      - authentication
+        - authentication
       summary: Create a new account
       responses:
         200:
-          description: "OK"
+          description: 'OK'
 
-  /entries:
+  /api/entries:
     get:
       tags:
-      - entries
+        - entries
       summary: Find All Entries
       responses:
         200:
@@ -70,15 +68,15 @@ paths:
           description: 'Server Error'
     post:
       tags:
-      - entries
+        - entries
       summary: Add Entries
       parameters:
-      - name: body
-        in: body
-        description: entry Data
-        required: true
-        schema:
-          $ref: '#/definitions/entries'
+        - name: body
+          in: body
+          description: entry Data
+          required: true
+          schema:
+            $ref: '#/definitions/entries'
       responses:
         201:
           description: 'Created'
@@ -88,23 +86,23 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-  /entries/{id}:
+  /api/entries/{id}:
     put:
       tags:
-      - entries
+        - entries
       summary: Update Entry By Id
       parameters:
-      - name: id
-        in: path
-        description: entry Id
-        required: true
-        type: integer
-      - name: body
-        in: body
-        description: user Data
-        required: true
-        schema:
-          $ref: '#/definitions/entries'
+        - name: id
+          in: path
+          description: entry Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: user Data
+          required: true
+          schema:
+            $ref: '#/definitions/entries'
       responses:
         200:
           description: 'OK'
@@ -115,11 +113,10 @@ paths:
         500:
           description: 'Server Error'
 
-
-  /tools:
+  /api/tools:
     get:
       tags:
-      - tools
+        - tools
       summary: Find All Tools
       responses:
         200:
@@ -128,15 +125,15 @@ paths:
           description: 'Server Error'
     post:
       tags:
-      - tools
+        - tools
       summary: Add Tools
       parameters:
-      - name: body
-        in: body
-        description: tool Data
-        required: true
-        schema:
-          $ref: '#/definitions/tools'
+        - name: body
+          in: body
+          description: tool Data
+          required: true
+          schema:
+            $ref: '#/definitions/tools'
       responses:
         201:
           description: 'Created'
@@ -146,23 +143,23 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-  /tools/{id}:
+  /api/tools/{id}:
     put:
       tags:
-      - tools
+        - tools
       summary: Update Tool By Id
       parameters:
-      - name: id
-        in: path
-        description: tool Id
-        required: true
-        type: integer
-      - name: body
-        in: body
-        description: tool Data
-        required: true
-        schema:
-          $ref: '#/definitions/tools'
+        - name: id
+          in: path
+          description: tool Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: tool Data
+          required: true
+          schema:
+            $ref: '#/definitions/tools'
       responses:
         200:
           description: 'OK'
@@ -172,12 +169,12 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-# end
+  # end
 
-  /outputs:
+  /api/outputs:
     get:
       tags:
-      - outputs
+        - outputs
       summary: Find All Outputs
       responses:
         200:
@@ -186,15 +183,15 @@ paths:
           description: 'Server Error'
     post:
       tags:
-      - outputs
+        - outputs
       summary: Add Outputs
       parameters:
-      - name: body
-        in: body
-        description: Output Data
-        required: true
-        schema:
-          $ref: '#/definitions/outputs'
+        - name: body
+          in: body
+          description: Output Data
+          required: true
+          schema:
+            $ref: '#/definitions/outputs'
       responses:
         201:
           description: 'Created'
@@ -204,23 +201,23 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-  /outputs/{id}:
+  /api/outputs/{id}:
     put:
       tags:
-      - outputs
+        - outputs
       summary: Update Output By Id
       parameters:
-      - name: id
-        in: path
-        description: output Id
-        required: true
-        type: integer
-      - name: body
-        in: body
-        description: output Data
-        required: true
-        schema:
-          $ref: '#/definitions/outputs'
+        - name: id
+          in: path
+          description: output Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: output Data
+          required: true
+          schema:
+            $ref: '#/definitions/outputs'
       responses:
         200:
           description: 'OK'
@@ -231,12 +228,11 @@ paths:
         500:
           description: 'Server Error'
 
-
   # [GET] areas/id
-  /areas:
+  /api/areas:
     get:
       tags:
-      - areas
+        - areas
       summary: Find All Areas
       responses:
         200:
@@ -245,15 +241,15 @@ paths:
           description: 'Server Error'
     post:
       tags:
-      - areas
+        - areas
       summary: Add Area
       parameters:
-      - name: body
-        in: body
-        description: area Data
-        required: true
-        schema:
-          $ref: '#/definitions/areas'
+        - name: body
+          in: body
+          description: area Data
+          required: true
+          schema:
+            $ref: '#/definitions/areas'
       responses:
         201:
           description: 'Created'
@@ -265,17 +261,17 @@ paths:
           description: 'Server Error'
 
   # [GET] areas/id
-  /areas/{id}:
+  /api/areas/{id}:
     get:
       tags:
-      - areas
+        - areas
       summary: Find Area By Id
       parameters:
-      - name: id
-        in: path
-        description: Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -284,23 +280,23 @@ paths:
         500:
           description: 'Server Error'
 
-# [PUT] users/id
+    # [PUT] users/id
     put:
       tags:
-      - areas
+        - areas
       summary: Update Area By Id
       parameters:
-      - name: id
-        in: path
-        description: Id
-        required: true
-        type: integer
-      - name: body
-        in: body
-        description: area Data
-        required: true
-        schema:
-          $ref: '#/definitions/areas'
+        - name: id
+          in: path
+          description: Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: area Data
+          required: true
+          schema:
+            $ref: '#/definitions/areas'
       responses:
         200:
           description: 'OK'
@@ -311,17 +307,17 @@ paths:
         500:
           description: 'Server Error'
 
-# [DELETE] users/id
+    # [DELETE] users/id
     delete:
       tags:
-      - areas
+        - areas
       summary: Delete Area By Id
       parameters:
-      - name: id
-        in: path
-        description: area Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: area Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -329,11 +325,11 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-          
-  /process:
+
+  /api/process:
     get:
       tags:
-      - processes
+        - processes
       summary: Find All processes
       responses:
         200:
@@ -342,15 +338,15 @@ paths:
           description: 'Server Error'
     post:
       tags:
-      - processes
+        - processes
       summary: Add process
       parameters:
-      - name: body
-        in: body
-        description: process Data
-        required: true
-        schema:
-          $ref: '#/definitions/processes'
+        - name: body
+          in: body
+          description: process Data
+          required: true
+          schema:
+            $ref: '#/definitions/processes'
       responses:
         201:
           description: 'Created'
@@ -362,22 +358,22 @@ paths:
           description: 'Server Error'
 
   # [GET] process/id
-  /process/filter/{areaId}&{groupId}:
+  /api/process/filter/{areaId}&{groupId}:
     get:
       tags:
-      - processes
+        - processes
       summary: Find processes By area & group Id
       parameters:
-      - name: areaId
-        in: path
-        description: area id
-        required: true
-        type: integer
-      - name: groupId
-        in: path
-        description: group id
-        required: true
-        type: integer
+        - name: areaId
+          in: path
+          description: area id
+          required: true
+          type: integer
+        - name: groupId
+          in: path
+          description: group id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -387,17 +383,17 @@ paths:
           description: 'Server Error'
 
   # [GET] process/id
-  /process/{id}:
+  /api/process/{id}:
     get:
       tags:
-      - processes
+        - processes
       summary: Find process By Id
       parameters:
-      - name: id
-        in: path
-        description: Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -406,23 +402,23 @@ paths:
         500:
           description: 'Server Error'
 
-# [PUT] process/id
+    # [PUT] process/id
     put:
       tags:
-      - processes
+        - processes
       summary: Update process By Id
       parameters:
-      - name: id
-        in: path
-        description: Id
-        required: true
-        type: integer
-      - name: body
-        in: body
-        description: process Data
-        required: true
-        schema:
-          $ref: '#/definitions/processes'
+        - name: id
+          in: path
+          description: Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: process Data
+          required: true
+          schema:
+            $ref: '#/definitions/processes'
       responses:
         200:
           description: 'OK'
@@ -433,17 +429,17 @@ paths:
         500:
           description: 'Server Error'
 
-# [DELETE] process/id
+    # [DELETE] process/id
     delete:
       tags:
-      - processes
+        - processes
       summary: Delete process By Id
       parameters:
-      - name: id
-        in: path
-        description: group Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: group Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -452,11 +448,10 @@ paths:
         500:
           description: 'Server Error'
 
-
-  /groups:
+  /api/groups:
     get:
       tags:
-      - groups
+        - groups
       summary: Find All Groups
       responses:
         200:
@@ -465,15 +460,15 @@ paths:
           description: 'Server Error'
     post:
       tags:
-      - groups
+        - groups
       summary: Add Group
       parameters:
-      - name: body
-        in: body
-        description: group Data
-        required: true
-        schema:
-          $ref: '#/definitions/groups'
+        - name: body
+          in: body
+          description: group Data
+          required: true
+          schema:
+            $ref: '#/definitions/groups'
       responses:
         201:
           description: 'Created'
@@ -485,17 +480,17 @@ paths:
           description: 'Server Error'
 
   # [GET] areas/id
-  /groups/{id}:
+  /api/groups/{id}:
     get:
       tags:
-      - groups
+        - groups
       summary: Find Group By Id
       parameters:
-      - name: id
-        in: path
-        description: Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -504,23 +499,23 @@ paths:
         500:
           description: 'Server Error'
 
-# [PUT] users/id
+    # [PUT] users/id
     put:
       tags:
-      - groups
+        - groups
       summary: Update Group By Id
       parameters:
-      - name: id
-        in: path
-        description: Id
-        required: true
-        type: integer
-      - name: body
-        in: body
-        description: group Data
-        required: true
-        schema:
-          $ref: '#/definitions/groups'
+        - name: id
+          in: path
+          description: Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: group Data
+          required: true
+          schema:
+            $ref: '#/definitions/groups'
       responses:
         200:
           description: 'OK'
@@ -531,17 +526,17 @@ paths:
         500:
           description: 'Server Error'
 
-# [DELETE] users/id
+    # [DELETE] users/id
     delete:
       tags:
-      - groups
+        - groups
       summary: Delete Groups By Id
       parameters:
-      - name: id
-        in: path
-        description: group Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: group Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -550,11 +545,11 @@ paths:
         500:
           description: 'Server Error'
 
-# [GET] users
-  /users:
+  # [GET] users
+  /api/users:
     get:
       tags:
-      - users
+        - users
       summary: Find All Users
       responses:
         200:
@@ -562,18 +557,18 @@ paths:
         500:
           description: 'Server Error'
 
-# [POST] users
+    # [POST] users
     post:
       tags:
-      - users
+        - users
       summary: Add User
       parameters:
-      - name: body
-        in: body
-        description: user Data
-        required: true
-        schema:
-          $ref: '#/definitions/users'
+        - name: body
+          in: body
+          description: user Data
+          required: true
+          schema:
+            $ref: '#/definitions/users'
       responses:
         201:
           description: 'Created'
@@ -584,18 +579,18 @@ paths:
         500:
           description: 'Server Error'
 
-# [GET] users/id
-  /users/{id}:
+  # [GET] users/id
+  /api/users/{id}:
     get:
       tags:
-      - users
+        - users
       summary: Find User By Id
       parameters:
-      - name: id
-        in: path
-        description: User Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: User Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -604,23 +599,23 @@ paths:
         500:
           description: 'Server Error'
 
-# [PUT] users/id
+    # [PUT] users/id
     put:
       tags:
-      - users
+        - users
       summary: Update User By Id
       parameters:
-      - name: id
-        in: path
-        description: user Id
-        required: true
-        type: integer
-      - name: body
-        in: body
-        description: user Data
-        required: true
-        schema:
-          $ref: '#/definitions/users'
+        - name: id
+          in: path
+          description: user Id
+          required: true
+          type: integer
+        - name: body
+          in: body
+          description: user Data
+          required: true
+          schema:
+            $ref: '#/definitions/users'
       responses:
         200:
           description: 'OK'
@@ -631,17 +626,17 @@ paths:
         500:
           description: 'Server Error'
 
-# [DELETE] users/id
+    # [DELETE] users/id
     delete:
       tags:
-      - users
+        - users
       summary: Delete User By Id
       parameters:
-      - name: id
-        in: path
-        description: user Id
-        required: true
-        type: integer
+        - name: id
+          in: path
+          description: user Id
+          required: true
+          type: integer
       responses:
         200:
           description: 'OK'
@@ -649,8 +644,6 @@ paths:
           description: 'Conflict'
         500:
           description: 'Server Error'
-
-  
 
 # definitions
 definitions:
@@ -661,10 +654,10 @@ definitions:
     properties:
       name:
         type: string
-        description: "Entry name"
+        description: 'Entry name'
       description:
         type: string
-        description: "Entry description"
+        description: 'Entry description'
   tools:
     type: object
     required:
@@ -672,10 +665,10 @@ definitions:
     properties:
       name:
         type: string
-        description: "Tool name"
+        description: 'Tool name'
       description:
         type: string
-        description: "Tool description"
+        description: 'Tool description'
   outputs:
     type: object
     required:
@@ -683,10 +676,10 @@ definitions:
     properties:
       name:
         type: string
-        description: "Output name"
+        description: 'Output name'
       description:
         type: string
-        description: "Output description"
+        description: 'Output description'
   areas:
     type: object
     required:
@@ -694,7 +687,7 @@ definitions:
     properties:
       name:
         type: string
-        description: "Name of the area"
+        description: 'Name of the area'
   groups:
     type: object
     required:
@@ -702,7 +695,7 @@ definitions:
     properties:
       name:
         type: string
-        description: "Name of the group"
+        description: 'Name of the group'
   processes:
     type: object
     required:
@@ -712,48 +705,48 @@ definitions:
     properties:
       name:
         type: string
-        description: "Name of the process"
+        description: 'Name of the process'
       areaId:
         type: string
-        description: "area id related to process"
+        description: 'area id related to process'
       groupId:
         type: string
-        description: "group id related to process"
+        description: 'group id related to process'
       newEntries:
         type: array
         items:
           $ref: '#/definitions/entries'
-        description: "[Entry] array with entry objects"
+        description: '[Entry] array with entry objects'
       existingEntries:
         type: array
         items:
           type: integer
-        description: "[Int] array with existing category ids"
+        description: '[Int] array with existing category ids'
       newOutputs:
         type: array
         items:
           $ref: '#/definitions/outputs'
-        description: "[Output] array with output objects"
+        description: '[Output] array with output objects'
       existingOutputs:
         type: array
         items:
           type: integer
-        description: "[Int] array with existing output ids"
+        description: '[Int] array with existing output ids'
       newTools:
         type: array
         items:
           $ref: '#/definitions/tools'
-        description: "[Tool] array with tool objects"
+        description: '[Tool] array with tool objects'
       existingTools:
         type: array
         items:
           type: integer
-        description: "[Int] array with existing tool ids"
+        description: '[Int] array with existing tool ids'
   users:
     type: object
     required:
-        - email
-        - password
+      - email
+      - password
     properties:
       email:
         type: string
@@ -763,5 +756,5 @@ definitions:
         description: user Password
 
 schemes:
- - https
- - http
+  - https
+  - http

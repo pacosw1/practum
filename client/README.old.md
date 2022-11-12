@@ -1,1 +1,0 @@
-# practum-app

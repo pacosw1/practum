@@ -39,7 +39,11 @@ function _objectSpread(target) {
 }
 let OutputService = class OutputService {
     async getAll() {
-        const all = await this.exits.findMany();
+        const all = await this.exits.findMany({
+            orderBy: {
+                id: 'asc'
+            }
+        });
         return all;
     }
     async create(data) {

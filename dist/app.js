@@ -26,9 +26,9 @@ function _interopRequireDefault(obj) {
 const path = require('path');
 let App = class App {
     initializeFrontend() {
-        this.app.use(_express.default.static(path.join(__dirname, '../front/build')));
+        this.app.use(_express.default.static(path.resolve(__dirname, '../client/build')));
         this.app.get('*', (req, res)=>{
-            res.sendFile(path.join(__dirname, '../front/build/index.html'));
+            res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
         });
     }
     listen() {
@@ -61,7 +61,7 @@ let App = class App {
     }
     initializeRoutes(routes) {
         routes.forEach((route)=>{
-            this.app.use('/', route.router);
+            this.app.use('/api', route.router);
         });
     }
     initializeSwagger() {
@@ -78,7 +78,7 @@ let App = class App {
             ]
         };
         const specs = (0, _swaggerJsdoc.default)(options);
-        this.app.use('/api-docs', _swaggerUiExpress.default.serve, _swaggerUiExpress.default.setup(specs));
+        this.app.use('/api/docs', _swaggerUiExpress.default.serve, _swaggerUiExpress.default.setup(specs));
     }
     initializeErrorHandling() {
         this.app.use(_errorMiddleware.default);
@@ -88,6 +88,8 @@ let App = class App {
         this.env = _config.NODE_ENV || 'development';
         this.port = _config.PORT || 3001;
         this.initializeMiddlewares();
+        this.initializeRoutes(routes);
+        this.initializeSwagger();
         this.initializeFrontend();
         this.initializeErrorHandling();
     }

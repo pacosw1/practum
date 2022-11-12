@@ -39,7 +39,11 @@ function _objectSpread(target) {
 }
 let ProcessService = class ProcessService {
     async getAll() {
-        const all = await this.processes.findMany();
+        const all = await this.processes.findMany({
+            orderBy: {
+                id: 'asc'
+            }
+        });
         return all;
     }
     async getGivenAreaAndGroup(areaId, groupId) {
@@ -59,16 +63,25 @@ let ProcessService = class ProcessService {
             },
             include: {
                 entries: {
+                    orderBy: {
+                        id: 'asc'
+                    },
                     include: {
                         entry: true
                     }
                 },
                 outputs: {
+                    orderBy: {
+                        id: 'asc'
+                    },
                     include: {
                         output: true
                     }
                 },
                 tools: {
+                    orderBy: {
+                        id: 'asc'
+                    },
                     include: {
                         tool: true
                     }
@@ -88,7 +101,7 @@ let ProcessService = class ProcessService {
             }
         });
         if (findProcess) throw new _httpException.HttpException(409, `Process with title ${data.name} already exists`);
-        let connectEntries = Array.from(data.existingEntries.map((id)=>{
+        const connectEntries = Array.from(data.existingEntries.map((id)=>{
             return {
                 entry: {
                     connect: {
@@ -97,14 +110,14 @@ let ProcessService = class ProcessService {
                 }
             };
         }));
-        let newEntries = Array.from(data.newEntries.map((newEntry)=>{
+        const newEntries = Array.from(data.newEntries.map((newEntry)=>{
             return {
                 entry: {
                     create: _objectSpread({}, newEntry)
                 }
             };
         }));
-        let connectOutputs = Array.from(data.existingOutputs.map((id)=>{
+        const connectOutputs = Array.from(data.existingOutputs.map((id)=>{
             return {
                 output: {
                     connect: {
@@ -113,14 +126,14 @@ let ProcessService = class ProcessService {
                 }
             };
         }));
-        let newOutputs = Array.from(data.newOutputs.map((newOutput)=>{
+        const newOutputs = Array.from(data.newOutputs.map((newOutput)=>{
             return {
                 output: {
                     create: _objectSpread({}, newOutput)
                 }
             };
         }));
-        let connectTools = Array.from(data.existingTools.map((id)=>{
+        const connectTools = Array.from(data.existingTools.map((id)=>{
             return {
                 tool: {
                     connect: {
@@ -129,14 +142,14 @@ let ProcessService = class ProcessService {
                 }
             };
         }));
-        let newTools = Array.from(data.newTools.map((newTool)=>{
+        const newTools = Array.from(data.newTools.map((newTool)=>{
             return {
                 tool: {
                     create: _objectSpread({}, newTool)
                 }
             };
         }));
-        let finalData = {
+        const finalData = {
             name: data.name,
             areaId: data.areaId,
             groupId: data.groupId,

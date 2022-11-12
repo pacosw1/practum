@@ -64,7 +64,11 @@ function _objectSpreadProps(target, source) {
 }
 let UserService = class UserService {
     async findAllUser() {
-        const allUser = await this.users.findMany();
+        const allUser = await this.users.findMany({
+            orderBy: {
+                id: 'asc'
+            }
+        });
         return allUser;
     }
     async findUserById(userId) {
