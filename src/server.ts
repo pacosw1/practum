@@ -13,15 +13,15 @@ import ToolsRoute from './routes/tools.route';
 validateEnv();
 
 const app = new App([
-    new IndexRoute(), 
-    new UsersRoute(), 
-    new AuthRoute(), 
-    new AreasRoute(), 
-    new GroupsRoute(), 
-    new ProcessRoute(),
-    new EntriesRoute(),
-    new OutputsRoute(),
-    new ToolsRoute()
+  new IndexRoute(),
+  new UsersRoute(),
+  new AuthRoute(),
+  new AreasRoute(),
+  new GroupsRoute(),
+  new ProcessRoute(),
+  new EntriesRoute(),
+  new OutputsRoute(),
+  new ToolsRoute(),
 ]);
 
 app.listen();
