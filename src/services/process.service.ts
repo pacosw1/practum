@@ -32,25 +32,16 @@ class ProcessService {
       where: { id: id },
       include: {
         entries: {
-          orderBy: {
-            id: 'asc',
-          },
           include: {
             entry: true,
           },
         },
         outputs: {
-          orderBy: {
-            id: 'asc',
-          },
           include: {
             output: true,
           },
         },
         tools: {
-          orderBy: {
-            id: 'asc',
-          },
           include: {
             tool: true,
           },

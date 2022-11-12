@@ -8,6 +8,7 @@ Object.defineProperty(exports, "default", {
 });
 const _express = require("express");
 const _validationMiddleware = _interopRequireDefault(require("../middlewares/validation.middleware"));
+const _authMiddleware = _interopRequireDefault(require("../middlewares/auth.middleware"));
 const _processDto = require("../dtos/process.dto");
 const _outputsController = _interopRequireDefault(require("../controllers/outputs.controller"));
 function _interopRequireDefault(obj) {
@@ -18,9 +19,9 @@ function _interopRequireDefault(obj) {
 let OutputsRoute = class OutputsRoute {
     initializeRoutes() {
         this.router.get(`${this.path}`, this.controller.getAll);
-        this.router.post(`${this.path}`, (0, _validationMiddleware.default)(_processDto.CreateEntryExitDto, 'body'), this.controller.create);
-        this.router.put(`${this.path}/:id(\\d+)`, (0, _validationMiddleware.default)(_processDto.CreateEntryExitDto, 'body', true), this.controller.update);
-        this.router.delete(`${this.path}/:id(\\d+)`, this.controller.delete);
+        this.router.post(`${this.path}`, _authMiddleware.default, (0, _validationMiddleware.default)(_processDto.CreateEntryExitDto, 'body'), this.controller.create);
+        this.router.put(`${this.path}/:id(\\d+)`, _authMiddleware.default, (0, _validationMiddleware.default)(_processDto.CreateEntryExitDto, 'body', true), this.controller.update);
+        this.router.delete(`${this.path}/:id(\\d+)`, _authMiddleware.default, this.controller.delete);
     }
     constructor(){
         this.path = '/outputs';

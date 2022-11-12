@@ -39,7 +39,11 @@ function _objectSpread(target) {
 }
 let ToolsService = class ToolsService {
     async getAll() {
-        const all = await this.exits.findMany();
+        const all = await this.exits.findMany({
+            orderBy: {
+                id: 'asc'
+            }
+        });
         return all;
     }
     async create(data) {

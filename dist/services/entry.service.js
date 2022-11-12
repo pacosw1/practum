@@ -39,7 +39,11 @@ function _objectSpread(target) {
 }
 let EntryService = class EntryService {
     async getAll() {
-        const all = await this.entries.findMany();
+        const all = await this.entries.findMany({
+            orderBy: {
+                id: 'asc'
+            }
+        });
         return all;
     }
     async create(data) {

@@ -84,7 +84,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     const aux = event.target.value;
 
     let results = aux.map(item => {
-      return allEntries[item - 1];
+      return allEntries[item - 1] || process.existingEntries[item - 1];
     });
 
     let newProcess = { ...process, existingEntries: [...results] };
@@ -96,7 +96,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     const aux = event.target.value;
 
     let results = aux.map(item => {
-      return allOutputs[item - 1];
+      return allOutputs[item - 1] || process.existingOutputs[item - 1];
     });
 
     let newProcess = { ...process, existingOutputs: [...results] };
@@ -108,7 +108,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     const aux = event.target.value;
 
     let results = aux.map(item => {
-      return allTools[item - 1];
+      return allTools[item - 1] || process.existingTools[item - 1];
     });
 
     let newProcess = { ...process, existingTools: [...results] };
@@ -498,20 +498,20 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               <FormControl>
                 <Select
                   multiple
-                  value={process.existingOutputs}
+                  value={process.existingOutputs.map(entry => entry.id)}
                   onChange={handleChangeOutput}
                   renderValue={selected => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {selected.map(id => {
-                        let out = process.existingOutputs.find(out => out.id === id);
-                        return <Chip key={id} label={out.name} />;
+                        let entry = process.existingOutputs.find(entry => entry.id === id);
+                        return <Chip key={id} label={entry.name} />;
                       })}
                     </Box>
                   )}
                   MenuProps={MenuProps}
                 >
                   {allOutputs.map(e => (
-                    <MenuItem key={e.id} value={e} style={getStyles(e.id, process.existingOutputs)}>
+                    <MenuItem key={e.id} value={e.id} style={getStyles(e.id, process.existingOutputs)}>
                       {e.name}
                     </MenuItem>
                   ))}
@@ -588,20 +588,20 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               <FormControl>
                 <Select
                   multiple
-                  value={process.existingTools}
+                  value={process.existingTools.map(item => item.id)}
                   onChange={handleChangeTool}
                   renderValue={selected => (
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       {selected.map(id => {
-                        let tool = process.existingTools.find(tool => tool.id === id);
-                        return <Chip key={id} label={tool.name} />;
+                        let item = process.existingTools.find(item => item.id === id);
+                        return <Chip key={id} label={item.name} />;
                       })}
                     </Box>
                   )}
                   MenuProps={MenuProps}
                 >
                   {allTools.map(e => (
-                    <MenuItem key={e.id} value={e} style={getStyles(e.id, process.existingTools)}>
+                    <MenuItem key={e.id} value={e.id} style={getStyles(e.id, process.existingTools)}>
                       {e.name}
                     </MenuItem>
                   ))}

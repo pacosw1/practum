@@ -39,7 +39,11 @@ function _objectSpread(target) {
 }
 let AreaService = class AreaService {
     async getAllAreas() {
-        const allAreas = await this.areas.findMany();
+        const allAreas = await this.areas.findMany({
+            orderBy: {
+                id: 'asc'
+            }
+        });
         return allAreas;
     }
     async getAreaGivenId(id) {
