@@ -83,8 +83,8 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
   const handleChangeEntry = event => {
     const aux = event.target.value;
 
-    let results = aux.map(item => {
-      return allEntries[item - 1] || process.existingEntries[item - 1];
+    let results = aux.map(id => {
+      return allEntries.find(item => item.id === id);
     });
 
     let newProcess = { ...process, existingEntries: [...results] };
@@ -95,8 +95,8 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
   const handleChangeOutput = event => {
     const aux = event.target.value;
 
-    let results = aux.map(item => {
-      return allOutputs[item - 1] || process.existingOutputs[item - 1];
+    let results = aux.map(id => {
+      return allOutputs.find(item => item.id === id);
     });
 
     let newProcess = { ...process, existingOutputs: [...results] };
@@ -107,8 +107,8 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
   const handleChangeTool = event => {
     const aux = event.target.value;
 
-    let results = aux.map(item => {
-      return allTools[item - 1] || process.existingTools[item - 1];
+    let results = aux.map(id => {
+      return allTools.find(item => item.id === id);
     });
 
     let newProcess = { ...process, existingTools: [...results] };
