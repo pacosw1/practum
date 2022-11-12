@@ -85,7 +85,7 @@ class AuthService {
   public createToken(user: User): TokenData {
     const dataStoredInToken: DataStoredInToken = { id: user.id };
     const secretKey: string = SECRET_KEY;
-    const expiresIn: number = 1000000;
+    const expiresIn: number = 1000 * 60 * 60 * 24 * 30; // 30 days
 
     return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
   }
