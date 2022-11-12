@@ -1,4 +1,4 @@
-import { Add } from "@mui/icons-material";
+import { Add } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -17,10 +17,10 @@ import {
   Select,
   TextField,
   Typography,
-} from "@mui/material";
-import { grey } from "@mui/material/colors";
-import React, { useEffect, useState } from "react";
-import { client } from "../../../config/environment";
+} from '@mui/material';
+import { grey } from '@mui/material/colors';
+import React, { useEffect, useState } from 'react';
+import { client } from '../../../config/environment';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -35,14 +35,14 @@ const MenuProps = {
 
 function getStyles(id, existent) {
   return {
-    fontWeight: existent.find((item) => item.id === id) ? 600 : 500,
+    fontWeight: existent.find(item => item.id === id) ? 600 : 500,
   };
 }
 
 const InitialProcess = {
-  name: "",
-  areaId: "",
-  groupId: "",
+  name: '',
+  areaId: '',
+  groupId: '',
   newEntries: [],
   existingEntries: [],
   newOutputs: [],
@@ -52,8 +52,8 @@ const InitialProcess = {
 };
 
 const InitialName = {
-  name: "",
-  description: "",
+  name: '',
+  description: '',
 };
 
 const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setActualProcess }) => {
@@ -71,7 +71,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
   const [newOutputsArray, setNewOutputsArray] = useState([]);
   const [newToolsArray, setNewToolsArray] = useState([]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
 
     setProcess({
@@ -80,31 +80,43 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     });
   };
 
-  const handleChangeEntry = (event) => {
+  const handleChangeEntry = event => {
     const aux = event.target.value;
 
-    let results = aux.map((item) => {
+    let results = aux.map(item => {
       return allEntries[item - 1];
     });
 
     let newProcess = { ...process, existingEntries: [...results] };
 
-    console.log(process.existingEntries);
-    console.log("aux", aux);
     setProcess(newProcess);
   };
 
-  const handleChangeOutput = (event) => {
+  const handleChangeOutput = event => {
     const aux = event.target.value;
-    setProcess({ ...process, existingOutputs: aux });
+
+    let results = aux.map(item => {
+      return allOutputs[item - 1];
+    });
+
+    let newProcess = { ...process, existingOutputs: [...results] };
+
+    setProcess(newProcess);
   };
 
-  const handleChangeTool = (event) => {
+  const handleChangeTool = event => {
     const aux = event.target.value;
-    setProcess({ ...process, existingTools: aux });
+
+    let results = aux.map(item => {
+      return allTools[item - 1];
+    });
+
+    let newProcess = { ...process, existingTools: [...results] };
+
+    setProcess(newProcess);
   };
 
-  const handleInputChangeEntry = (e) => {
+  const handleInputChangeEntry = e => {
     const { name, value } = e.target;
 
     setNewEntry({
@@ -113,7 +125,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     });
   };
 
-  const handleInputChangeOutput = (e) => {
+  const handleInputChangeOutput = e => {
     const { name, value } = e.target;
 
     setNewOutput({
@@ -122,7 +134,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     });
   };
 
-  const handleInputChangeTool = (e) => {
+  const handleInputChangeTool = e => {
     const { name, value } = e.target;
 
     setNewTool({
@@ -168,15 +180,15 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
 
   const updateProcess = async () => {
     let auxProcess = process;
-    auxProcess.existingEntries = process.existingEntries.map((ent) => {
+    auxProcess.existingEntries = process.existingEntries.map(ent => {
       return ent.id;
     });
 
-    auxProcess.existingOutputs = process.existingOutputs.map((ent) => {
+    auxProcess.existingOutputs = process.existingOutputs.map(ent => {
       return ent.id;
     });
 
-    auxProcess.existingTools = process.existingTools.map((ent) => {
+    auxProcess.existingTools = process.existingTools.map(ent => {
       return ent.id;
     });
 
@@ -189,49 +201,49 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
       refetch();
       closeDialog();
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
   const loadEntries = async () => {
     try {
-      await client.get("entries").then((res) => {
+      await client.get('entries').then(res => {
         let e = res?.data?.data;
         setAllEntries(e);
       });
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
   const loadOutputs = async () => {
     try {
-      await client.get("outputs").then((res) => {
+      await client.get('outputs').then(res => {
         let e = res?.data?.data;
         setAllOutputs(e);
       });
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
   const loadTools = async () => {
     try {
-      await client.get("tools").then((res) => {
+      await client.get('tools').then(res => {
         let e = res?.data?.data;
         setAllTools(e);
       });
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
   const loadProcess = async () => {
     try {
-      await client.get(`process/${actualProcess?.id}`).then((res) => {
+      await client.get(`process/${actualProcess?.id}`).then(res => {
         let p = res?.data?.data;
 
-        p.entries = p.entries.map((entry) => {
+        p.entries = p.entries.map(entry => {
           return {
             id: entry.entry.id,
             name: entry.entry.name,
@@ -239,7 +251,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
           };
         });
 
-        p.outputs = p.outputs.map((output) => {
+        p.outputs = p.outputs.map(output => {
           return {
             id: output.output.id,
             name: output.output.name,
@@ -247,7 +259,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
           };
         });
 
-        p.tools = p.tools.map((tool) => {
+        p.tools = p.tools.map(tool => {
           return {
             id: tool.tool.id,
             name: tool.tool.name,
@@ -266,7 +278,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
         });
       });
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
@@ -291,7 +303,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
       maxWidth="xl"
       PaperProps={{
         style: {
-          backgroundColor: "#F5F5F5",
+          backgroundColor: '#F5F5F5',
         },
       }}
     >
@@ -301,35 +313,45 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
           <Grid item xs={12}>
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
+                display: 'flex',
+                flexDirection: 'column',
                 borderRadius: 1,
                 p: 2,
-                bgcolor: "white",
+                bgcolor: 'white',
               }}
             >
               <Typography variant="caption" display="block" gutterBottom>
                 Nombre de Proceso:
               </Typography>
-              <TextField id="name" name="name" type="text" required value={process.name} onChange={handleInputChange} size="small" margin="dense" fullWidth />
+              <TextField
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={process.name}
+                onChange={handleInputChange}
+                size="small"
+                margin="dense"
+                fullWidth
+              />
             </Box>
           </Grid>
 
           <Grid item xs={12} sm={4}>
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
+                display: 'flex',
+                flexDirection: 'column',
                 borderRadius: 2,
                 p: 2,
-                bgcolor: "white",
+                bgcolor: 'white',
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}
               >
                 <Typography fontWeight={600}>Entradas</Typography>
@@ -341,18 +363,38 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               <Typography variant="caption" display="block" gutterBottom>
                 Nombre:
               </Typography>
-              <TextField id="name" name="name" type="text" required value={newEntry.name} onChange={handleInputChangeEntry} size="small" margin="dense" fullWidth />
+              <TextField
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={newEntry.name}
+                onChange={handleInputChangeEntry}
+                size="small"
+                margin="dense"
+                fullWidth
+              />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripcion:
+                Descripción:
               </Typography>
-              <TextField id="description" name="description" type="text" required value={newEntry.description} onChange={handleInputChangeEntry} size="small" margin="dense" fullWidth />
+              <TextField
+                id="description"
+                name="description"
+                type="text"
+                required
+                value={newEntry.description}
+                onChange={handleInputChangeEntry}
+                size="small"
+                margin="dense"
+                fullWidth
+              />
 
               <Typography variant="caption" fontWeight={600} color={grey[400]} align="right">
                 Entradas agregadas manualmente
               </Typography>
 
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, p: 2 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 2 }}>
                 {newEntriesArray.map((value, index) => (
                   <Chip key={index} label={value.name} sx={{ fontWeight: 600 }} />
                 ))}
@@ -364,19 +406,19 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               <FormControl>
                 <Select
                   multiple
-                  value={process.existingEntries.map((entry) => entry.id)}
+                  value={process.existingEntries.map(entry => entry.id)}
                   onChange={handleChangeEntry}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((id) => {
-                        let entry = process.existingEntries.find((entry) => entry.id === id);
+                  renderValue={selected => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map(id => {
+                        let entry = process.existingEntries.find(entry => entry.id === id);
                         return <Chip key={id} label={entry.name} />;
                       })}
                     </Box>
                   )}
                   MenuProps={MenuProps}
                 >
-                  {allEntries.map((e) => (
+                  {allEntries.map(e => (
                     <MenuItem key={e.id} value={e.id} style={getStyles(e.id, process.existingEntries)}>
                       {e.name}
                     </MenuItem>
@@ -389,18 +431,18 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
           <Grid item xs={12} sm={4}>
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
+                display: 'flex',
+                flexDirection: 'column',
                 borderRadius: 2,
                 p: 2,
-                bgcolor: "white",
+                bgcolor: 'white',
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}
               >
                 <Typography fontWeight={600}>Salidas</Typography>
@@ -412,18 +454,38 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               <Typography variant="caption" display="block" gutterBottom>
                 Nombre:
               </Typography>
-              <TextField id="name" name="name" type="text" required value={newOutput.name} onChange={handleInputChangeOutput} size="small" margin="dense" fullWidth />
+              <TextField
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={newOutput.name}
+                onChange={handleInputChangeOutput}
+                size="small"
+                margin="dense"
+                fullWidth
+              />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripcion:
+                Descripción:
               </Typography>
-              <TextField id="description" name="description" type="text" required value={newOutput.description} onChange={handleInputChangeOutput} size="small" margin="dense" fullWidth />
+              <TextField
+                id="description"
+                name="description"
+                type="text"
+                required
+                value={newOutput.description}
+                onChange={handleInputChangeOutput}
+                size="small"
+                margin="dense"
+                fullWidth
+              />
 
               <Typography variant="caption" fontWeight={600} color={grey[400]} align="right">
                 Salidas agregadas manualmente
               </Typography>
 
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, p: 2 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 2 }}>
                 {newOutputsArray.map((value, index) => (
                   <Chip key={index} label={value.name} sx={{ fontWeight: 600 }} />
                 ))}
@@ -438,16 +500,17 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                   multiple
                   value={process.existingOutputs}
                   onChange={handleChangeOutput}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value.id} label={value.name} />
-                      ))}
+                  renderValue={selected => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map(id => {
+                        let out = process.existingOutputs.find(out => out.id === id);
+                        return <Chip key={id} label={out.name} />;
+                      })}
                     </Box>
                   )}
                   MenuProps={MenuProps}
                 >
-                  {allOutputs.map((e) => (
+                  {allOutputs.map(e => (
                     <MenuItem key={e.id} value={e} style={getStyles(e.id, process.existingOutputs)}>
                       {e.name}
                     </MenuItem>
@@ -460,18 +523,18 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
           <Grid item xs={12} sm={4}>
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
+                display: 'flex',
+                flexDirection: 'column',
                 borderRadius: 2,
                 p: 2,
-                bgcolor: "white",
+                bgcolor: 'white',
               }}
             >
               <Box
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
                 }}
               >
                 <Typography fontWeight={600}>Herramientas</Typography>
@@ -483,18 +546,37 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               <Typography variant="caption" display="block" gutterBottom>
                 Nombre:
               </Typography>
-              <TextField id="name" name="name" type="text" required value={newTool.name} onChange={handleInputChangeTool} size="small" margin="dense" fullWidth />
+              <TextField
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={newTool.name}
+                onChange={handleInputChangeTool}
+                size="small"
+                margin="dense"
+                fullWidth
+              />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripcion:
+                Descripción:
               </Typography>
-              <TextField id="description" name="description" type="text" required value={newTool.description} onChange={handleInputChangeTool} size="small" margin="dense" />
+              <TextField
+                id="description"
+                name="description"
+                type="text"
+                required
+                value={newTool.description}
+                onChange={handleInputChangeTool}
+                size="small"
+                margin="dense"
+              />
 
               <Typography variant="caption" fontWeight={600} color={grey[400]} align="right">
                 Herramientas agregadas manualmente
               </Typography>
 
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, p: 2 }}>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 2 }}>
                 {newToolsArray.map((value, index) => (
                   <Chip key={index} label={value.name} sx={{ fontWeight: 600 }} />
                 ))}
@@ -508,16 +590,17 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                   multiple
                   value={process.existingTools}
                   onChange={handleChangeTool}
-                  renderValue={(selected) => (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {selected.map((value) => (
-                        <Chip key={value.id} label={value.name} />
-                      ))}
+                  renderValue={selected => (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      {selected.map(id => {
+                        let tool = process.existingTools.find(tool => tool.id === id);
+                        return <Chip key={id} label={tool.name} />;
+                      })}
                     </Box>
                   )}
                   MenuProps={MenuProps}
                 >
-                  {allTools.map((e) => (
+                  {allTools.map(e => (
                     <MenuItem key={e.id} value={e} style={getStyles(e.id, process.existingTools)}>
                       {e.name}
                     </MenuItem>
@@ -532,7 +615,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
         <Button color="error" variant="contained" onClick={closeDialog}>
           Cancelar
         </Button>
-        <Button color="success" variant="contained" onClick={updateProcess} disabled={process.name === "" ? true : false}>
+        <Button color="success" variant="contained" onClick={updateProcess} disabled={process.name === '' ? true : false}>
           Actualizar
         </Button>
       </DialogActions>
