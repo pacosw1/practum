@@ -9,7 +9,11 @@ class AreaService {
   public areas = new PrismaClient().area;
 
   public async getAllAreas(): Promise<Area[]> {
-    const allAreas: Area[] = await this.areas.findMany();
+    const allAreas: Area[] = await this.areas.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
     return allAreas;
   }
 

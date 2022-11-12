@@ -7,7 +7,11 @@ class EntryService {
   public entries = new PrismaClient().entry;
 
   public async getAll(): Promise<Entry[]> {
-    const all: Entry[] = await this.entries.findMany();
+    const all: Entry[] = await this.entries.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
     return all;
   }
 
@@ -20,8 +24,6 @@ class EntryService {
     const createEntry: Entry = await this.entries.create({ data: { ...data } });
     return createEntry;
   }
-
-
 
   public async update(id: number, data: CreateEntryExitDto): Promise<Entry> {
     if (isEmpty(data)) throw new HttpException(400, 'userData is empty');
@@ -42,7 +44,6 @@ class EntryService {
     const deleteEntry = await this.entries.delete({ where: { id: id } });
     return deleteEntry;
   }
-
 }
 
 export default EntryService;
