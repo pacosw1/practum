@@ -1,4 +1,4 @@
-import { Add } from "@mui/icons-material";
+import { Add } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -14,17 +14,17 @@ import {
   TableRow,
   Tooltip,
   Typography,
-} from "@mui/material";
-import { grey } from "@mui/material/colors";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { client } from "../../config/environment";
-import AddAreaDialog from "./addAreaDialog";
-import AddGroupDialog from "./addGroupDialog";
-import AddProcessDialog from "./addProcessDialog";
-import EditAreaDialog from "./editAreaDialog";
-import EditGroupDialog from "./editGroupDialog";
-import EditProcessDialog from "./editProcessDialog";
+} from '@mui/material';
+import { grey } from '@mui/material/colors';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { client } from '../../config/environment';
+import AddAreaDialog from './addAreaDialog';
+import AddGroupDialog from './addGroupDialog';
+import AddProcessDialog from './addProcessDialog';
+import EditAreaDialog from './editAreaDialog';
+import EditGroupDialog from './editGroupDialog';
+import EditProcessDialog from './editProcessDialog';
 
 const Dashboard = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -59,68 +59,69 @@ const Dashboard = () => {
 
   const loadGroups = async () => {
     try {
-      await client.get("groups").then((res) => {
+      await client.get('groups').then(res => {
         let gro = res?.data?.data;
         setGroups(gro);
       });
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
   const loadAreas = async () => {
     try {
-      await client.get("areas").then((res) => {
+      await client.get('areas').then(res => {
         let are = res?.data?.data;
         setAreas(are);
       });
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
   const loadProcesses = async () => {
     try {
-      await client.get("process").then((res) => {
+      await client.get('process').then(res => {
         let pro = res?.data?.data;
         setProcess(pro);
       });
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
     }
   };
 
-  const openEditGroupDialog = (g) => {
+  const openEditGroupDialog = g => {
     setEditGroup(g);
     setEditGroupDialogShow(true);
   };
 
-  const openEditAreaDialog = (a) => {
+  const openEditAreaDialog = a => {
     setEditArea(a);
     setEditAreaDialogShow(true);
   };
 
-  const openEditProcessDialog = (p) => {
+  const openEditProcessDialog = p => {
     setEditProcess(p);
     setEditProcessDialogShow(true);
   };
 
   useEffect(() => {
-    loadGroups();
-    loadAreas();
-    loadProcesses();
+    async function fetchData() {
+      await loadGroups();
+      await loadAreas();
+      await loadProcesses();
+    }
+    fetchData();
   }, []);
 
   const createTable = () => {
     let globalArray = [];
 
-    areas.forEach((a) => {
+    areas.forEach(a => {
       let aux = [];
 
-      groups.forEach((c) => {
-        let curr = process.filter(
-          (pro) => pro.areaId === a.id && pro.groupId === c.id
-        );
+      groups.forEach(c => {
+        let curr = process.filter(pro => pro.areaId === a.id && pro.groupId === c.id);
 
         aux.push([...curr]);
       });
@@ -137,10 +138,10 @@ const Dashboard = () => {
 
   return (
     <>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 4 }}>
         <Button
-          variant='contained'
-          onClick={(event) => {
+          variant="contained"
+          onClick={event => {
             setAnchorEl(event.currentTarget);
           }}
         >
@@ -153,7 +154,7 @@ const Dashboard = () => {
             setAnchorEl(null);
           }}
           MenuListProps={{
-            "aria-labelledby": "basic-button",
+            'aria-labelledby': 'basic-button',
           }}
         >
           <MenuItem
@@ -190,29 +191,29 @@ const Dashboard = () => {
         <Table
           sx={{
             minWidth: 650,
-            "& .MuiTableCell-root:hover": {
-              bgcolor: "secondary.main",
+            '& .MuiTableCell-root:hover': {
+              bgcolor: 'secondary.main',
             },
           }}
         >
           <TableHead>
-            <TableRow sx={{ "& td": { border: 0 } }}>
+            <TableRow sx={{ '& td': { border: 0 } }}>
               <TableCell
                 sx={{
-                  "&:hover": {
-                    bgcolor: "transparent !important",
+                  '&:hover': {
+                    bgcolor: 'transparent !important',
                   },
                 }}
               ></TableCell>
-              {groups.map((g) => (
-                <Tooltip key={g.id} title='Editar' placement='top'>
+              {groups.map(g => (
+                <Tooltip key={g.id} title="Editar" placement="top">
                   <TableCell
                     onClick={() => {
                       openEditGroupDialog(g);
                     }}
-                    align='center'
+                    align="center"
                     sx={{
-                      background: "#D0D3D4",
+                      background: '#D0D3D4',
                       borderRadius: 1,
                     }}
                   >
@@ -224,21 +225,21 @@ const Dashboard = () => {
           </TableHead>
           <TableBody>
             {areas.map((a, index) => (
-              <TableRow key={a.name} sx={{ "& td": { border: 0 } }}>
-                <Tooltip key={a.id} title='Editar' placement='top'>
+              <TableRow key={a.name} sx={{ '& td': { border: 0 } }}>
+                <Tooltip key={a.id} title="Editar" placement="top">
                   <TableCell
                     sx={{
-                      position: "sticky",
+                      position: 'sticky',
                       left: 0,
-                      background: "#D0D3D4",
+                      background: '#D0D3D4',
                       borderRadius: 1,
                     }}
                     onClick={() => {
                       openEditAreaDialog(a);
                     }}
-                    component='th'
-                    scope='row'
-                    align='center'
+                    component="th"
+                    scope="row"
+                    align="center"
                   >
                     <b> {a.name}</b>
                   </TableCell>
@@ -247,9 +248,9 @@ const Dashboard = () => {
                 {global[index]?.map((ga, count) => (
                   <TableCell
                     key={count}
-                    align='center'
+                    align="center"
                     sx={{
-                      background: "#F8F9F9",
+                      background: '#F8F9F9',
                       borderRadius: 1,
                     }}
                     onClick={() => {
@@ -260,7 +261,7 @@ const Dashboard = () => {
                     }}
                   >
                     {ga.length !== 0 ? (
-                      ga?.map((proc) => (
+                      ga?.map(proc => (
                         <div
                           key={proc.id}
                           onClick={() => {
@@ -271,7 +272,7 @@ const Dashboard = () => {
                         </div>
                       ))
                     ) : (
-                      <Add sx={{ fill: "#F8F9F9" }} />
+                      <Add sx={{ fill: '#F8F9F9' }} />
                     )}
                   </TableCell>
                 ))}
@@ -281,17 +282,9 @@ const Dashboard = () => {
         </Table>
       </TableContainer>
 
-      <AddGroupDialog
-        visible={addGroupDialogShow}
-        setVisible={setAddGroupDialogShow}
-        refetch={refetch}
-      />
+      <AddGroupDialog visible={addGroupDialogShow} setVisible={setAddGroupDialogShow} refetch={refetch} />
 
-      <AddAreaDialog
-        visible={addAreaDialogShow}
-        setVisible={setAddAreaDialogShow}
-        refetch={refetch}
-      />
+      <AddAreaDialog visible={addAreaDialogShow} setVisible={setAddAreaDialogShow} refetch={refetch} />
 
       <AddProcessDialog
         visible={addProcessDialogShow}
