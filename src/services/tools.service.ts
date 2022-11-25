@@ -42,6 +42,8 @@ class ToolsService {
     const findEntry: Tool = await this.exits.findUnique({ where: { id: id } });
     if (!findEntry) throw new HttpException(409, "Tool doesn't exist");
 
+    await new PrismaClient().toolsOnProcess.deleteMany({ where: { toolId: id } });
+
     const deleteEntry = await this.exits.update({
       where: { id: id },
       data: {

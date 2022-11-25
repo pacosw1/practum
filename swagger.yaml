@@ -710,6 +710,9 @@ definitions:
       name:
         type: string
         description: 'Entry name'
+      isExit:
+        type: boolean
+        description: 'mark if item is exit'
       description:
         type: string
         description: 'Entry description'
@@ -740,6 +743,9 @@ definitions:
     required:
       - name
     properties:
+      order:
+        type: integer
+        description: 'Optional value, choose the order in which its displayed asc'
       name:
         type: string
         description: 'Name of the area'
@@ -748,6 +754,9 @@ definitions:
     required:
       - name
     properties:
+      order:
+        type: integer
+        description: 'Optional value, choose the order in which its displayed asc'
       name:
         type: string
         description: 'Name of the group'

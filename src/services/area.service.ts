@@ -33,7 +33,9 @@ class AreaService {
     const findArea: Area = await this.areas.findUnique({ where: { name: areaData.name } });
     if (findArea) throw new HttpException(409, `Area with title ${areaData.name} already exists`);
 
-    const createAreaData: Area = await this.areas.create({ data: { ...areaData } });
+    const count = await this.areas.count({ where: { active: true } });
+
+    const createAreaData: Area = await this.areas.create({ data: { ...areaData, order: count + 1 } });
     return createAreaData;
   }
 

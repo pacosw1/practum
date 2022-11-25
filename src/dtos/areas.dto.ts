@@ -1,9 +1,10 @@
-import { IsEmail, IsString, IsNumber } from 'class-validator';
+import { IsEmail, IsString, IsInt, IsOptional } from 'class-validator';
 
 export class CreateAreaDto {
   @IsString()
   public name: string;
 
-  @IsNumber()
+  @IsOptional()
+  @IsInt()
   public order: number;
 }

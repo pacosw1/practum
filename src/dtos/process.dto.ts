@@ -1,5 +1,5 @@
 import { Entry, Output, Tool } from '@prisma/client';
-import { IsArray, isArray, IsInt, IsNumberString, IsString } from 'class-validator';
+import { IsArray, isArray, IsBoolean, IsInt, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class CreateProcessDto {
   @IsString()
@@ -12,33 +12,34 @@ export class CreateProcessDto {
   public groupId: number;
 
   @IsArray()
-  public newEntries: [Entry]
+  public newEntries: [Entry];
 
   @IsArray()
-  public existingEntries: [number]
+  public existingEntries: [number];
 
   @IsArray()
-  public newOutputs: [Output]
+  public newOutputs: [Output];
 
   @IsArray()
-  public existingOutputs: [number]
+  public existingOutputs: [number];
 
   @IsArray()
-  public newTools: [Tool]
+  public newTools: [Tool];
 
   @IsArray()
-  public existingTools: [number]
-
+  public existingTools: [number];
 }
 
 export class CreateEntryExitDto {
-
   @IsString()
   public name: string;
 
   @IsString()
   public description: string;
 
+  @IsOptional()
+  @IsBoolean()
+  public isExit: boolean;
 }
 
 export class GetFilteredProcessesDto {

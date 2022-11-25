@@ -42,7 +42,10 @@ class OutputService {
     const findEntry: Output = await this.exits.findUnique({ where: { id: id } });
     if (!findEntry) throw new HttpException(409, "Output doesn't exist");
 
+    await new PrismaClient().outputsOnProcess.deleteMany({ where: { outputId: id } });
+
     const deleteEntry = await this.exits.update({ where: { id: id }, data: { ...findEntry, active: false } });
+
     return deleteEntry;
   }
 }

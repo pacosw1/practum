@@ -31,7 +31,9 @@ class GroupService {
     const findGroup: Group = await this.groups.findUnique({ where: { name: data.name } });
     if (findGroup) throw new HttpException(409, `Group with title ${data.name} already exists`);
 
-    const createdata: Group = await this.groups.create({ data: { ...data } });
+    const count = await this.groups.count({ where: { active: true } });
+
+    const createdata: Group = await this.groups.create({ data: { ...data, order: count + 1 } });
     return createdata;
   }
 

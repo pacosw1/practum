@@ -1,9 +1,10 @@
-import { IsEmail, IsNumber, IsString } from 'class-validator';
+import { IsEmail, IsIn, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateGroupDto {
   @IsString()
   public name: string;
 
-  @IsNumber()
+  @IsOptional()
+  @IsInt()
   public order: number;
 }

@@ -57,6 +57,7 @@ model Process {
 
 model Entry {
   id          Int     @id @default(autoincrement())
+  isExit      Boolean @default(false)
   active      Boolean @default(true)
   name        String  @unique
   description String
@@ -68,6 +69,7 @@ model Entry {
 model EntriesOnProcess {
   process   Process @relation(fields: [processId], references: [id])
   processId Int
+  isExit    Boolean @default(false)
   entry     Entry   @relation(fields: [entryId], references: [id])
   entryId   Int
 

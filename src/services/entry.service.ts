@@ -42,6 +42,14 @@ class EntryService {
     const findEntry: Entry = await this.entries.findUnique({ where: { id: id } });
     if (!findEntry) throw new HttpException(409, "User doesn't exist");
 
+    const deleted = await new PrismaClient().entriesOnProcess.deleteMany({
+      where: {
+        entryId: id,
+      },
+    });
+
+    console.log(deleted);
+
     const deleteEntry = await this.entries.update({
       where: { id: id },
       data: {
