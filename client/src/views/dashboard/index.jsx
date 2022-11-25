@@ -228,7 +228,9 @@ const Dashboard = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <b>{g?.name}</b>
+                    <b>
+                      {g?.order} {g?.name}
+                    </b>
                   </TableCell>
                 </Tooltip>
               ))}
@@ -252,7 +254,9 @@ const Dashboard = () => {
                     scope="row"
                     align="center"
                   >
-                    <b> {a.name}</b>
+                    <b>
+                      {a?.order} {a.name}
+                    </b>
                   </TableCell>
                 </Tooltip>
 
