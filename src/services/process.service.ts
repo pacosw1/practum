@@ -11,6 +11,7 @@ class ProcessService {
       orderBy: {
         id: 'asc',
       },
+      where: { active: true },
     });
     return all;
   }
@@ -49,7 +50,7 @@ class ProcessService {
       },
     });
 
-    if (!findProcess) throw new HttpException(409, "Area doesn't exist");
+    if (!findProcess || (findProcess && !findProcess.active)) throw new HttpException(409, "Area doesn't exist");
 
     return findProcess;
   }
@@ -61,7 +62,7 @@ class ProcessService {
     data.groupId = Number(data.groupId);
 
     const findProcess: Process = await this.processes.findUnique({ where: { name: data.name } });
-    if (findProcess) throw new HttpException(409, `Process with title ${data.name} already exists`);
+    if (findProcess || (findProcess && !findProcess.active)) throw new HttpException(409, `Process with title ${data.name} already exists`);
 
     const connectEntries = Array.from(
       data.existingEntries.map(id => {
@@ -174,7 +175,7 @@ class ProcessService {
       },
     });
 
-    if (!findProcess) throw new HttpException(409, "User doesn't exist");
+    if (!findProcess || (findProcess && !findProcess.active)) throw new HttpException(409, "User doesn't exist");
 
     let oldEntries = await new PrismaClient().entriesOnProcess.findMany({
       where: { processId: id },
@@ -331,7 +332,7 @@ class ProcessService {
     const findProcess: Process = await this.processes.findUnique({ where: { id: id } });
     if (!findProcess) throw new HttpException(409, "User doesn't exist");
 
-    const deleteProcess = await this.processes.delete({ where: { id: id } });
+    const deleteProcess = await this.processes.update({ where: { id: id }, data: { ...findProcess, active: false } });
     return deleteProcess;
   }
 }

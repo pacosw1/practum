@@ -8,8 +8,9 @@ class GroupService {
 
   public async getAll(): Promise<Group[]> {
     const allGroups: Group[] = await this.groups.findMany({
+      where: { active: true },
       orderBy: {
-        id: 'asc',
+        order: 'asc',
       },
     });
     return allGroups;
@@ -19,7 +20,7 @@ class GroupService {
     if (isEmpty(id)) throw new HttpException(400, 'id is empty');
 
     const findGroup: Group = await this.groups.findUnique({ where: { id: id } });
-    if (!findGroup) throw new HttpException(409, "Group doesn't exist");
+    if (!findGroup || (findGroup && !findGroup.active)) throw new HttpException(409, "Group doesn't exist");
 
     return findGroup;
   }
@@ -30,7 +31,9 @@ class GroupService {
     const findGroup: Group = await this.groups.findUnique({ where: { name: data.name } });
     if (findGroup) throw new HttpException(409, `Group with title ${data.name} already exists`);
 
-    const createdata: Group = await this.groups.create({ data: { ...data } });
+    const count = await this.groups.count({ where: { active: true } });
+
+    const createdata: Group = await this.groups.create({ data: { ...data, order: count + 1 } });
     return createdata;
   }
 
@@ -38,7 +41,7 @@ class GroupService {
     if (isEmpty(data)) throw new HttpException(400, 'data is empty');
 
     const findGroup: Group = await this.groups.findUnique({ where: { id: id } });
-    if (!findGroup) throw new HttpException(409, "Group doesn't exist");
+    if (!findGroup || (findGroup && !findGroup.active)) throw new HttpException(409, "Group doesn't exist");
 
     const newGroup = await this.groups.update({ where: { id: id }, data: { ...data } });
     return newGroup;
@@ -50,7 +53,13 @@ class GroupService {
     const findGroup: Group = await this.groups.findUnique({ where: { id: id } });
     if (!findGroup) throw new HttpException(409, "Group doesn't exist");
 
-    const deleteGroup = await this.groups.delete({ where: { id: id } });
+    const deleteGroup = await this.groups.update({
+      where: { id: id },
+      data: {
+        ...findGroup,
+        active: false,
+      },
+    });
     return deleteGroup;
   }
 }

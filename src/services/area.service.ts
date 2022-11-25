@@ -10,8 +10,9 @@ class AreaService {
 
   public async getAllAreas(): Promise<Area[]> {
     const allAreas: Area[] = await this.areas.findMany({
+      where: { active: true },
       orderBy: {
-        id: 'asc',
+        order: 'asc',
       },
     });
     return allAreas;
@@ -21,7 +22,7 @@ class AreaService {
     if (isEmpty(id)) throw new HttpException(400, 'id is empty');
 
     const findArea: Area = await this.areas.findUnique({ where: { id: id } });
-    if (!findArea) throw new HttpException(409, "Area doesn't exist");
+    if (!findArea || (findArea && !findArea.active)) throw new HttpException(409, "Area doesn't exist");
 
     return findArea;
   }
@@ -32,7 +33,9 @@ class AreaService {
     const findArea: Area = await this.areas.findUnique({ where: { name: areaData.name } });
     if (findArea) throw new HttpException(409, `Area with title ${areaData.name} already exists`);
 
-    const createAreaData: Area = await this.areas.create({ data: { ...areaData } });
+    const count = await this.areas.count({ where: { active: true } });
+
+    const createAreaData: Area = await this.areas.create({ data: { ...areaData, order: count + 1 } });
     return createAreaData;
   }
 
@@ -40,7 +43,7 @@ class AreaService {
     if (isEmpty(data)) throw new HttpException(400, 'userData is empty');
 
     const findArea: Area = await this.areas.findUnique({ where: { id: id } });
-    if (!findArea) throw new HttpException(409, "User doesn't exist");
+    if (!findArea || (findArea && !findArea.active)) throw new HttpException(409, "User doesn't exist");
 
     const newArea = await this.areas.update({ where: { id: id }, data: { ...data } });
     return newArea;
@@ -52,7 +55,7 @@ class AreaService {
     const findArea: Area = await this.areas.findUnique({ where: { id: id } });
     if (!findArea) throw new HttpException(409, "User doesn't exist");
 
-    const deleteAreaData = await this.areas.delete({ where: { id: id } });
+    const deleteAreaData = await this.areas.update({ where: { id: id }, data: { ...findArea, active: false } });
     return deleteAreaData;
   }
 }

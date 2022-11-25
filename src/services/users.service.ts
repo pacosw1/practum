@@ -12,6 +12,7 @@ class UserService {
       orderBy: {
         id: 'asc',
       },
+      where: { active: true },
     });
     return allUser;
   }
@@ -20,7 +21,7 @@ class UserService {
     if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
 
     const findUser: User = await this.users.findUnique({ where: { id: userId } });
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    if (!findUser || (findUser && !findUser.active)) throw new HttpException(409, "User doesn't exist");
 
     return findUser;
   }
@@ -40,7 +41,7 @@ class UserService {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findUnique({ where: { id: userId } });
-    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    if (!findUser || (findUser && !findUser.active)) throw new HttpException(409, "User doesn't exist");
 
     const hashedPassword = await hash(userData.password, 10);
     const updateUserData = await this.users.update({ where: { id: userId }, data: { ...userData, password: hashedPassword } });
@@ -53,7 +54,13 @@ class UserService {
     const findUser: User = await this.users.findUnique({ where: { id: userId } });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
 
-    const deleteUserData = await this.users.delete({ where: { id: userId } });
+    const deleteUserData = await this.users.update({
+      where: { id: userId },
+      data: {
+        ...findUser,
+        active: false,
+      },
+    });
     return deleteUserData;
   }
 }
