@@ -11,6 +11,7 @@ class EntryService {
       orderBy: {
         id: 'asc',
       },
+      where: { active: true },
     });
     return all;
   }
@@ -29,7 +30,7 @@ class EntryService {
     if (isEmpty(data)) throw new HttpException(400, 'userData is empty');
 
     const findEntry: Entry = await this.entries.findUnique({ where: { id: id } });
-    if (!findEntry) throw new HttpException(409, "Entry doesn't exist");
+    if (!findEntry || (findEntry && !findEntry.active)) throw new HttpException(409, "Entry doesn't exist");
 
     const newEntry = await this.entries.update({ where: { id: id }, data: { ...data } });
     return newEntry;
@@ -41,7 +42,21 @@ class EntryService {
     const findEntry: Entry = await this.entries.findUnique({ where: { id: id } });
     if (!findEntry) throw new HttpException(409, "User doesn't exist");
 
-    const deleteEntry = await this.entries.delete({ where: { id: id } });
+    const deleted = await new PrismaClient().entriesOnProcess.deleteMany({
+      where: {
+        entryId: id,
+      },
+    });
+
+    console.log(deleted);
+
+    const deleteEntry = await this.entries.update({
+      where: { id: id },
+      data: {
+        ...findEntry,
+        active: false,
+      },
+    });
     return deleteEntry;
   }
 }

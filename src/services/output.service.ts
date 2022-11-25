@@ -11,6 +11,7 @@ class OutputService {
       orderBy: {
         id: 'asc',
       },
+      where: { active: true },
     });
     return all;
   }
@@ -29,7 +30,7 @@ class OutputService {
     if (isEmpty(data)) throw new HttpException(400, 'data is empty');
 
     const findEntry: Output = await this.exits.findUnique({ where: { id: id } });
-    if (!findEntry) throw new HttpException(409, "Output doesn't exist");
+    if (!findEntry || (findEntry && !findEntry.active)) throw new HttpException(409, "Output doesn't exist");
 
     const newEntry = await this.exits.update({ where: { id: id }, data: { ...data } });
     return newEntry;
@@ -41,7 +42,10 @@ class OutputService {
     const findEntry: Output = await this.exits.findUnique({ where: { id: id } });
     if (!findEntry) throw new HttpException(409, "Output doesn't exist");
 
-    const deleteEntry = await this.exits.delete({ where: { id: id } });
+    await new PrismaClient().outputsOnProcess.deleteMany({ where: { outputId: id } });
+
+    const deleteEntry = await this.exits.update({ where: { id: id }, data: { ...findEntry, active: false } });
+
     return deleteEntry;
   }
 }

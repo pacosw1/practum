@@ -11,57 +11,68 @@ generator client {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id     Int     @id @default(autoincrement())
+  active Boolean @default(true)
+
   email    String @unique
   password String
 }
-
 
 // -------------------------------------------------------------------
 
 // One to One with process
 model Area {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
+  id     Int     @id @default(autoincrement())
+  active Boolean @default(true)
+  order  Int     @default(autoincrement())
+
+  name      String    @unique
   processes Process[]
 }
+
 // One to one with process
 model Group {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
+  id    Int @id @default(autoincrement())
+  order Int @default(autoincrement())
+
+  active    Boolean   @default(true)
+  name      String    @unique
   processes Process[]
 }
 
 model Process {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
-  group Group @relation(fields: [groupId], references: [id])
+  id      Int     @id @default(autoincrement())
+  active  Boolean @default(true)
+  name    String  @unique
+  group   Group   @relation(fields: [groupId], references: [id])
   groupId Int
 
-  Area Area @relation(fields: [areaId], references: [id])
+  Area   Area @relation(fields: [areaId], references: [id])
   areaId Int
 
   entries EntriesOnProcess[]
-  outputs OutputsOnProcess[] 
-  tools ToolsOnProcess[]
+  outputs OutputsOnProcess[]
+  tools   ToolsOnProcess[]
 }
 
 // -------------------------------------------------------------------
 
 model Entry {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
-  description    String
+  id          Int     @id @default(autoincrement())
+  active      Boolean @default(true)
+  name        String  @unique
+  description String
 
   processes EntriesOnProcess[]
 }
 
 // Many to Many relation table (process_entries)
 model EntriesOnProcess {
-  process Process @relation(fields: [processId], references: [id])
+  process   Process @relation(fields: [processId], references: [id])
   processId Int
-  entry Entry @relation(fields: [entryId], references: [id])
-  entryId Int
+  entry     Entry   @relation(fields: [entryId], references: [id])
+  entryId   Int
+  isExit    Boolean @default(false)
 
   @@id([processId, entryId])
 }
@@ -70,18 +81,19 @@ model EntriesOnProcess {
 
 // Many to Many Relation Table (process_outputs)
 model OutputsOnProcess {
-  process Process @relation(fields: [processId], references: [id])
+  process   Process @relation(fields: [processId], references: [id])
   processId Int
-  output Output @relation(fields: [outputId], references: [id])
-  outputId Int
+  output    Output  @relation(fields: [outputId], references: [id])
+  outputId  Int
 
   @@id([processId, outputId])
 }
 
 model Output {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
-  description    String
+  id          Int     @id @default(autoincrement())
+  active      Boolean @default(true)
+  name        String  @unique
+  description String
 
   processes OutputsOnProcess[]
 }
@@ -89,18 +101,19 @@ model Output {
 // // -------------------------------------------------------------------
 
 model ToolsOnProcess {
-  process Process @relation(fields: [processId], references: [id])
+  process   Process @relation(fields: [processId], references: [id])
   processId Int
-  tool Tool @relation(fields: [toolId], references: [id])
-  toolId Int
+  tool      Tool    @relation(fields: [toolId], references: [id])
+  toolId    Int
 
   @@id([processId, toolId])
 }
 
 model Tool {
-  id       Int    @id @default(autoincrement())
-  name    String @unique
-  description    String
+  id          Int     @id @default(autoincrement())
+  active      Boolean @default(true)
+  name        String  @unique
+  description String
 
   processes ToolsOnProcess[]
 }

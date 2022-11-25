@@ -7,6 +7,7 @@ Make sure to install the following dependencies needed to run the project locall
 * Docker (for mysql and prod)
 * Primsa CLI (should be downloaded automatically with npm install)
 * Node 16+
+* ReactJS
 
 # Installation
 
