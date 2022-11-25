@@ -9,6 +9,8 @@ RUN npm install
 
 EXPOSE 3001
 
+ENV DATABASE_URL postgres://davhzenbzxfewb:525a59f5b6ed8c6d9d1732f00b33c122936a0d8835593e210674dd4bb37d09c0@ec2-44-209-57-4.compute-1.amazonaws.com:5432/dcm2jtehg5dpn0
+
 # Development build stage
 FROM common-build-stage as development-build-stage
 
