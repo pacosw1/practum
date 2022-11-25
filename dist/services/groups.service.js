@@ -37,11 +37,38 @@ function _objectSpread(target) {
     }
     return target;
 }
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        if (enumerableOnly) {
+            symbols = symbols.filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+            });
+        }
+        keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _objectSpreadProps(target, source) {
+    source = source != null ? source : {};
+    if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+        ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
 let GroupService = class GroupService {
     async getAll() {
         const allGroups = await this.groups.findMany({
+            where: {
+                active: true
+            },
             orderBy: {
-                id: 'asc'
+                order: 'asc'
             }
         });
         return allGroups;
@@ -53,7 +80,7 @@ let GroupService = class GroupService {
                 id: id
             }
         });
-        if (!findGroup) throw new _httpException.HttpException(409, "Group doesn't exist");
+        if (!findGroup || findGroup && !findGroup.active) throw new _httpException.HttpException(409, "Group doesn't exist");
         return findGroup;
     }
     async create(data) {
@@ -64,8 +91,15 @@ let GroupService = class GroupService {
             }
         });
         if (findGroup) throw new _httpException.HttpException(409, `Group with title ${data.name} already exists`);
+        const count = await this.groups.count({
+            where: {
+                active: true
+            }
+        });
         const createdata = await this.groups.create({
-            data: _objectSpread({}, data)
+            data: _objectSpreadProps(_objectSpread({}, data), {
+                order: count + 1
+            })
         });
         return createdata;
     }
@@ -76,7 +110,7 @@ let GroupService = class GroupService {
                 id: id
             }
         });
-        if (!findGroup) throw new _httpException.HttpException(409, "Group doesn't exist");
+        if (!findGroup || findGroup && !findGroup.active) throw new _httpException.HttpException(409, "Group doesn't exist");
         const newGroup = await this.groups.update({
             where: {
                 id: id
@@ -93,10 +127,13 @@ let GroupService = class GroupService {
             }
         });
         if (!findGroup) throw new _httpException.HttpException(409, "Group doesn't exist");
-        const deleteGroup = await this.groups.delete({
+        const deleteGroup = await this.groups.update({
             where: {
                 id: id
-            }
+            },
+            data: _objectSpreadProps(_objectSpread({}, findGroup), {
+                active: false
+            })
         });
         return deleteGroup;
     }

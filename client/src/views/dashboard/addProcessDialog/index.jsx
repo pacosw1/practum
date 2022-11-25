@@ -229,6 +229,7 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
       await client.get('entries').then(res => {
         let e = res?.data?.data;
         setAllEntries(e);
+        console.log(e);
       });
     } catch (error) {
       console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
@@ -237,7 +238,7 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
 
   const loadOutputs = async () => {
     try {
-      await client.get('outputs').then(res => {
+      await client.get('entries').then(res => {
         let e = res?.data?.data;
         setAllOutputs(e);
       });
@@ -258,18 +259,18 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
   };
 
   useEffect(() => {
-    if (actual !== undefined) {
-      loadEntries();
-      loadOutputs();
-      loadTools();
+    // if (actual !== undefined) {
+    loadEntries();
+    loadOutputs();
+    loadTools();
 
-      setProcess({
-        ...process,
-        areaId: String(actual?.area),
-        groupId: String(actual?.group),
-      });
-    }
-  }, [visible, actual]);
+    setProcess({
+      ...process,
+      areaId: String(actual?.area),
+      groupId: String(actual?.group),
+    });
+    // }
+  }, [visible]);
 
   return (
     <Dialog

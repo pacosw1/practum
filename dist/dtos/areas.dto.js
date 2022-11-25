@@ -22,5 +22,10 @@ __decorate([
     (0, _classValidator.IsString)(),
     __metadata("design:type", String)
 ], CreateAreaDto.prototype, "name", void 0);
+__decorate([
+    (0, _classValidator.IsOptional)(),
+    (0, _classValidator.IsInt)(),
+    __metadata("design:type", Number)
+], CreateAreaDto.prototype, "order", void 0);
 
 //# sourceMappingURL=areas.dto.js.map

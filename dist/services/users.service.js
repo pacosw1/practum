@@ -67,6 +67,9 @@ let UserService = class UserService {
         const allUser = await this.users.findMany({
             orderBy: {
                 id: 'asc'
+            },
+            where: {
+                active: true
             }
         });
         return allUser;
@@ -78,7 +81,7 @@ let UserService = class UserService {
                 id: userId
             }
         });
-        if (!findUser) throw new _httpException.HttpException(409, "User doesn't exist");
+        if (!findUser || findUser && !findUser.active) throw new _httpException.HttpException(409, "User doesn't exist");
         return findUser;
     }
     async createUser(userData) {
@@ -104,7 +107,7 @@ let UserService = class UserService {
                 id: userId
             }
         });
-        if (!findUser) throw new _httpException.HttpException(409, "User doesn't exist");
+        if (!findUser || findUser && !findUser.active) throw new _httpException.HttpException(409, "User doesn't exist");
         const hashedPassword = await (0, _bcrypt.hash)(userData.password, 10);
         const updateUserData = await this.users.update({
             where: {
@@ -124,10 +127,13 @@ let UserService = class UserService {
             }
         });
         if (!findUser) throw new _httpException.HttpException(409, "User doesn't exist");
-        const deleteUserData = await this.users.delete({
+        const deleteUserData = await this.users.update({
             where: {
                 id: userId
-            }
+            },
+            data: _objectSpreadProps(_objectSpread({}, findUser), {
+                active: false
+            })
         });
         return deleteUserData;
     }

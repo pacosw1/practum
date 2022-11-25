@@ -24,7 +24,7 @@ class ProcessService {
   public async getGivenId(id: number): Promise<
     Process & {
       entries: EntriesOnProcess[];
-      outputs: OutputsOnProcess[];
+      // outputs: OutputsOnProcess[];
     }
   > {
     if (isEmpty(id)) throw new HttpException(400, 'id is empty');
@@ -37,11 +37,11 @@ class ProcessService {
             entry: true,
           },
         },
-        outputs: {
-          include: {
-            output: true,
-          },
-        },
+        // outputs: {
+        //   include: {
+        //     output: true,
+        //   },
+        // },
         tools: {
           include: {
             tool: true,
@@ -67,6 +67,7 @@ class ProcessService {
     const connectEntries = Array.from(
       data.existingEntries.map(id => {
         return {
+          isExit: false,
           entry: {
             connect: {
               id: id,
@@ -79,6 +80,7 @@ class ProcessService {
     const newEntries = Array.from(
       data.newEntries.map(newEntry => {
         return {
+          isExit: false,
           entry: {
             create: {
               ...newEntry,
@@ -91,7 +93,8 @@ class ProcessService {
     const connectOutputs = Array.from(
       data.existingOutputs.map(id => {
         return {
-          output: {
+          isExit: true,
+          entry: {
             connect: {
               id: id,
             },
@@ -103,35 +106,10 @@ class ProcessService {
     const newOutputs = Array.from(
       data.newOutputs.map(newOutput => {
         return {
-          output: {
-            create: {
-              ...newOutput,
-            },
-          },
-        };
-      }),
-    );
-
-    const newTestOutputs = Array.from(
-      data.newOutputs.map(newOutput => {
-        return {
           isExit: true,
-          output: {
+          entry: {
             create: {
               ...newOutput,
-            },
-          },
-        };
-      }),
-    );
-
-    const testConnectOutputs = Array.from(
-      data.existingOutputs.map(id => {
-        return {
-          entry: {
-            isExit: true,
-            connect: {
-              id: id,
             },
           },
         };
@@ -167,10 +145,7 @@ class ProcessService {
       areaId: data.areaId,
       groupId: data.groupId,
       entries: {
-        create: [...newEntries, ...connectEntries, ...newTestOutputs, ...testConnectOutputs],
-      },
-      outputs: {
-        create: [...newOutputs, ...connectOutputs],
+        create: [...newEntries, ...connectEntries, ...newOutputs, ...connectOutputs],
       },
       tools: {
         create: [...newTools, ...connectTools],
@@ -240,7 +215,7 @@ class ProcessService {
 
     for (const entry of data.existingEntries) {
       if (!old.has(entry)) {
-        connectEntries.push({ entry: { connect: { id: entry } } });
+        connectEntries.push({ isExit: false, entry: { connect: { id: entry } } });
       }
     }
 
@@ -306,6 +281,7 @@ class ProcessService {
       data.newEntries.map(newEntry => {
         return {
           entry: {
+            isExit: false,
             create: {
               ...newEntry,
             },
@@ -346,11 +322,11 @@ class ProcessService {
     };
 
     const entryClient = new PrismaClient().entriesOnProcess;
-    const outputClient = new PrismaClient().outputsOnProcess;
     const toolClient = new PrismaClient().toolsOnProcess;
 
-    const deleteEntries = await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectEntries } } });
-    const deleteOutputs = await outputClient.deleteMany({ where: { processId: id, outputId: { in: disconnectOutputs } } });
+    await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectEntries }, isExit: false } });
+    await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectOutputs }, isExit: true } });
+
     const deleteTools = await toolClient.deleteMany({ where: { processId: id, toolId: { in: disconnectTools } } });
 
     const newProcess = await this.processes.update({ where: { id: id }, data: { ...finalData } });

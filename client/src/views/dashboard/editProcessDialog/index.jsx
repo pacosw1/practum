@@ -24,6 +24,7 @@ import { grey } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
 import { client } from '../../../config/environment';
 import toast from 'react-hot-toast';
+import { filter } from 'compression';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -274,8 +275,10 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
 
   const loadOutputs = async () => {
     try {
-      await client.get('outputs').then(res => {
+      await client.get('entries').then(res => {
         let e = res?.data?.data;
+
+        console.log(e);
         setAllOutputs(e);
       });
     } catch (error) {
@@ -299,21 +302,19 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
       await client.get(`process/${actualProcess?.id}`).then(res => {
         let p = res?.data?.data;
 
+        console.log('wtf');
+        console.log(p);
+
         p.entries = p.entries.map(entry => {
           return {
+            isExit: entry.isExit,
             id: entry.entry.id,
             name: entry.entry.name,
             description: entry.entry.description,
           };
         });
-
-        p.outputs = p.outputs.map(output => {
-          return {
-            id: output.output.id,
-            name: output.output.name,
-            description: output.output.description,
-          };
-        });
+        p.outputs = p.entries.filter(entry => entry.isExit === true);
+        p.entries = p.entries.filter(entry => entry.isExit === false);
 
         p.tools = p.tools.map(tool => {
           return {
