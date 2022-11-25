@@ -426,7 +426,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripcion:
+                Descripción:
               </Typography>
               <TextField
                 id="description"

@@ -5,96 +5,84 @@ import { client } from '../../../config/environment';
 
 const InitialName = {
   name: '',
-  order: 4,
+  description: '',
 };
 
-const EditGroupDialog = ({ visible, setVisible, refetch, groupToEdit, setGroupToEdit }) => {
-  const [group, setGroup] = useState(InitialName);
+const AddEntry = ({ visible, setVisible, refetch }) => {
+  const [entry, setEntry] = useState(InitialName);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
 
-    setGroup({
-      ...group,
+    setEntry({
+      ...entry,
       [name]: value,
     });
   };
 
   const closeDialog = () => {
     setVisible(false);
-    setGroup(InitialName);
-    setGroupToEdit();
+    setEntry(InitialName);
   };
 
-  const editGroup = async () => {
+  const createEntry = async () => {
     try {
-      await client.put(`groups/${groupToEdit.id}`, group);
+      await client.post('entries', entry);
       refetch();
       closeDialog();
-      toast.success('Grupo renombrado');
+      toast.success('Entrada creada');
     } catch (error) {
       console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
-      toast.error('Error al renombrar');
+      toast.error('Error al crear');
     }
   };
-
-  useEffect(() => {
-    if (visible === true) {
-      setGroup({ ...group, name: groupToEdit.name, order: groupToEdit?.order });
-    }
-  }, [visible, groupToEdit]);
 
   return (
     <Dialog open={visible} onClose={closeDialog}>
-      <DialogTitle>Editar grupo</DialogTitle>
+      <DialogTitle>Agregar entrada</DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="caption" display="block" gutterBottom>
-              Nombre de Grupo:
+              Nombre:
             </Typography>
             <TextField
               id="name"
               name="name"
               type="text"
               required
-              value={group.name}
+              value={entry.name}
               onChange={handleInputChange}
               fullWidth
               size="small"
               margin="dense"
             />
-
             <Typography variant="caption" display="block" gutterBottom>
-              Orden:
+              Descripción:
             </Typography>
             <TextField
-              id="order"
-              name="order"
-              type="number"
+              id="description"
+              name="description"
+              type="text"
               required
-              value={group.order}
+              value={entry.description}
               onChange={handleInputChange}
               fullWidth
               size="small"
               margin="dense"
-              InputProps={{
-                inputProps: { min: 4 },
-              }}
             />
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={closeDialog}>
+        <Button variant="contained" onClick={closeDialog}>
           Cancelar
         </Button>
-        <Button color="success" variant="contained" onClick={editGroup} disabled={group.name === '' ? true : false}>
-          Actualizar
+        <Button color="success" variant="contained" onClick={createEntry} disabled={!(entry.name && entry.description)}>
+          Crear
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
-
-export default EditGroupDialog;
+export default AddEntry;

@@ -1,4 +1,4 @@
-import { ChevronLeft, Dashboard, Logout, Menu, Person } from '@mui/icons-material';
+import { ChevronLeft, Dashboard, FormatListNumbered, Logout, Menu, Person } from '@mui/icons-material';
 import {
   AppBar,
   Box,
@@ -131,6 +131,19 @@ const MainLayout = ({ children }) => {
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItemButton>
+
+          <ListItemButton
+            selected={'/list' === pathname}
+            onClick={() => {
+              navigate('/list');
+            }}
+          >
+            <ListItemIcon>
+              <FormatListNumbered />
+            </ListItemIcon>
+            <ListItemText primary="Usuarios" />
+          </ListItemButton>
+
           <ListItemButton
             selected={'/users' === pathname}
             onClick={() => {

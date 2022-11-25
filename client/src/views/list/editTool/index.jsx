@@ -5,96 +5,106 @@ import { client } from '../../../config/environment';
 
 const InitialName = {
   name: '',
-  order: 4,
+  description: '',
 };
 
-const EditGroupDialog = ({ visible, setVisible, refetch, groupToEdit, setGroupToEdit }) => {
-  const [group, setGroup] = useState(InitialName);
+const EditTool = ({ visible, setVisible, refetch, editing, setEditing }) => {
+  const [tool, setTool] = useState(InitialName);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
 
-    setGroup({
-      ...group,
+    setTool({
+      ...tool,
       [name]: value,
     });
   };
 
   const closeDialog = () => {
     setVisible(false);
-    setGroup(InitialName);
-    setGroupToEdit();
+    setTool(InitialName);
+    setEditing();
   };
 
-  const editGroup = async () => {
+  const editTool = async () => {
     try {
-      await client.put(`groups/${groupToEdit.id}`, group);
+      await client.put(`tools/${editing.id}`, tool);
       refetch();
       closeDialog();
-      toast.success('Grupo renombrado');
+      toast.success('Herramienta renombrada');
     } catch (error) {
       console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
       toast.error('Error al renombrar');
     }
   };
 
+  const onDelete = async () => {
+    try {
+      await client.delete(`tools/${editing.id}`);
+      refetch();
+      closeDialog();
+      toast.success('Herramienta eliminada');
+    } catch (error) {
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
+      toast.error('Error al eliminar, esta siendo usada.');
+    }
+  };
+
   useEffect(() => {
     if (visible === true) {
-      setGroup({ ...group, name: groupToEdit.name, order: groupToEdit?.order });
+      setTool({ ...tool, name: editing?.name, description: editing?.description });
     }
-  }, [visible, groupToEdit]);
+  }, [visible, editing]);
 
   return (
     <Dialog open={visible} onClose={closeDialog}>
-      <DialogTitle>Editar grupo</DialogTitle>
+      <DialogTitle>Editar herramienta</DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="caption" display="block" gutterBottom>
-              Nombre de Grupo:
+              Nombre:
             </Typography>
             <TextField
               id="name"
               name="name"
               type="text"
               required
-              value={group.name}
+              value={tool.name}
               onChange={handleInputChange}
               fullWidth
               size="small"
               margin="dense"
             />
-
             <Typography variant="caption" display="block" gutterBottom>
-              Orden:
+              Descripción:
             </Typography>
             <TextField
-              id="order"
-              name="order"
-              type="number"
+              id="description"
+              name="description"
+              type="text"
               required
-              value={group.order}
+              value={tool.description}
               onChange={handleInputChange}
               fullWidth
               size="small"
               margin="dense"
-              InputProps={{
-                inputProps: { min: 4 },
-              }}
             />
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={closeDialog}>
+        <Button color="error" variant="contained" onClick={onDelete}>
+          Eliminar
+        </Button>
+        <Button variant="contained" onClick={closeDialog}>
           Cancelar
         </Button>
-        <Button color="success" variant="contained" onClick={editGroup} disabled={group.name === '' ? true : false}>
+        <Button color="success" variant="contained" onClick={editTool} disabled={!(tool.name && tool.description)}>
           Actualizar
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
-
-export default EditGroupDialog;
+export default EditTool;

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 
 const InitialName = {
   name: '',
+  order: 4,
 };
 
 const EditAreaDialog = ({ visible, setVisible, refetch, areaToEdit, setAreaToEdit }) => {
@@ -39,7 +40,7 @@ const EditAreaDialog = ({ visible, setVisible, refetch, areaToEdit, setAreaToEdi
 
   useEffect(() => {
     if (visible === true) {
-      setArea({ ...area, name: areaToEdit.name });
+      setArea({ ...area, name: areaToEdit.name, order: areaToEdit?.order });
     }
   }, [visible, areaToEdit]);
 
@@ -62,6 +63,23 @@ const EditAreaDialog = ({ visible, setVisible, refetch, areaToEdit, setAreaToEdi
               fullWidth
               size="small"
               margin="dense"
+            />
+            <Typography variant="caption" display="block" gutterBottom>
+              Orden:
+            </Typography>
+            <TextField
+              id="order"
+              name="order"
+              type="number"
+              required
+              value={area.order}
+              onChange={handleInputChange}
+              fullWidth
+              size="small"
+              margin="dense"
+              InputProps={{
+                inputProps: { min: 4 },
+              }}
             />
           </Grid>
         </Grid>

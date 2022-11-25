@@ -405,7 +405,7 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
               />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripcion:
+                Descripción:
               </Typography>
               <TextField
                 id="description"

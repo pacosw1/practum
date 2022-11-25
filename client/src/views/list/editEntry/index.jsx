@@ -5,96 +5,106 @@ import { client } from '../../../config/environment';
 
 const InitialName = {
   name: '',
-  order: 4,
+  description: '',
 };
 
-const EditGroupDialog = ({ visible, setVisible, refetch, groupToEdit, setGroupToEdit }) => {
-  const [group, setGroup] = useState(InitialName);
+const EditEntry = ({ visible, setVisible, refetch, editing, setEditing }) => {
+  const [entry, setEntry] = useState(InitialName);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
 
-    setGroup({
-      ...group,
+    setEntry({
+      ...entry,
       [name]: value,
     });
   };
 
   const closeDialog = () => {
     setVisible(false);
-    setGroup(InitialName);
-    setGroupToEdit();
+    setEntry(InitialName);
+    setEditing();
   };
 
-  const editGroup = async () => {
+  const editEntry = async () => {
     try {
-      await client.put(`groups/${groupToEdit.id}`, group);
+      await client.put(`entries/${editing.id}`, entry);
       refetch();
       closeDialog();
-      toast.success('Grupo renombrado');
+      toast.success('Entrada renombrada');
     } catch (error) {
       console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
       toast.error('Error al renombrar');
     }
   };
 
+  const onDelete = async () => {
+    try {
+      await client.delete(`entries/${editing.id}`);
+      refetch();
+      closeDialog();
+      toast.success('Entrada eliminada');
+    } catch (error) {
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
+      toast.error('Error al eliminar, esta siendo usada.');
+    }
+  };
+
   useEffect(() => {
     if (visible === true) {
-      setGroup({ ...group, name: groupToEdit.name, order: groupToEdit?.order });
+      setEntry({ ...entry, name: editing?.name, description: editing?.description });
     }
-  }, [visible, groupToEdit]);
+  }, [visible, editing]);
 
   return (
     <Dialog open={visible} onClose={closeDialog}>
-      <DialogTitle>Editar grupo</DialogTitle>
+      <DialogTitle>Editar entrada</DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="caption" display="block" gutterBottom>
-              Nombre de Grupo:
+              Nombre:
             </Typography>
             <TextField
               id="name"
               name="name"
               type="text"
               required
-              value={group.name}
+              value={entry.name}
               onChange={handleInputChange}
               fullWidth
               size="small"
               margin="dense"
             />
-
             <Typography variant="caption" display="block" gutterBottom>
-              Orden:
+              Descripción:
             </Typography>
             <TextField
-              id="order"
-              name="order"
-              type="number"
+              id="description"
+              name="description"
+              type="text"
               required
-              value={group.order}
+              value={entry.description}
               onChange={handleInputChange}
               fullWidth
               size="small"
               margin="dense"
-              InputProps={{
-                inputProps: { min: 4 },
-              }}
             />
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={closeDialog}>
+        <Button color="error" variant="contained" onClick={onDelete}>
+          Eliminar
+        </Button>
+        <Button variant="contained" onClick={closeDialog}>
           Cancelar
         </Button>
-        <Button color="success" variant="contained" onClick={editGroup} disabled={group.name === '' ? true : false}>
+        <Button color="success" variant="contained" onClick={editEntry} disabled={!(entry.name && entry.description)}>
           Actualizar
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
-
-export default EditGroupDialog;
+export default EditEntry;
