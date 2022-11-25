@@ -14,10 +14,17 @@ const EditGroupDialog = ({ visible, setVisible, refetch, groupToEdit, setGroupTo
   const handleInputChange = e => {
     const { name, value } = e.target;
 
-    setGroup({
-      ...group,
-      [name]: value,
-    });
+    if (e.target.type === 'number') {
+      setGroup({
+        ...group,
+        [name]: Number(value),
+      });
+    } else {
+      setGroup({
+        ...group,
+        [name]: value,
+      });
+    }
   };
 
   const closeDialog = () => {
