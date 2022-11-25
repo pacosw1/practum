@@ -18,16 +18,16 @@ class EntriesController {
     }
   };
 
-//   public getGivenId = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-//     try {
-//       const id = Number(req.params.id);
-//       const findArea: Entry = await this.service(id);
+  //   public getGivenId = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  //     try {
+  //       const id = Number(req.params.id);
+  //       const findArea: Entry = await this.service(id);
 
-//       res.status(200).json({ data: findArea, message: 'findOne' });
-//     } catch (error) {
-//       next(error);
-//     }
-//   };
+  //       res.status(200).json({ data: findArea, message: 'findOne' });
+  //     } catch (error) {
+  //       next(error);
+  //     }
+  //   };
 
   public create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

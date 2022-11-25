@@ -2,17 +2,17 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-const _app = _interopRequireDefault(require("./app.ts"));
-const _authRoute = _interopRequireDefault(require("./routes/auth.route.ts"));
-const _indexRoute = _interopRequireDefault(require("./routes/index.route.ts"));
-const _usersRoute = _interopRequireDefault(require("./routes/users.route.ts"));
-const _validateEnv = _interopRequireDefault(require("./utils/validateEnv.ts"));
-const _areasRoute = _interopRequireDefault(require("./routes/areas.route.ts"));
-const _entriesRoute = _interopRequireDefault(require("./routes/entries.route.ts"));
-const _groupsRoute = _interopRequireDefault(require("./routes/groups.route.ts"));
-const _outputsRoute = _interopRequireDefault(require("./routes/outputs.route.ts"));
-const _processRoute = _interopRequireDefault(require("./routes/process.route.ts"));
-const _toolsRoute = _interopRequireDefault(require("./routes/tools.route.ts"));
+const _app = _interopRequireDefault(require("./app"));
+const _authRoute = _interopRequireDefault(require("./routes/auth.route"));
+const _indexRoute = _interopRequireDefault(require("./routes/index.route"));
+const _usersRoute = _interopRequireDefault(require("./routes/users.route"));
+const _validateEnv = _interopRequireDefault(require("./utils/validateEnv"));
+const _areasRoute = _interopRequireDefault(require("./routes/areas.route"));
+const _entriesRoute = _interopRequireDefault(require("./routes/entries.route"));
+const _groupsRoute = _interopRequireDefault(require("./routes/groups.route"));
+const _outputsRoute = _interopRequireDefault(require("./routes/outputs.route"));
+const _processRoute = _interopRequireDefault(require("./routes/process.route"));
+const _toolsRoute = _interopRequireDefault(require("./routes/tools.route"));
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj

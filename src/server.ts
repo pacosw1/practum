@@ -3,12 +3,12 @@ import AuthRoute from '@routes/auth.route';
 import IndexRoute from '@routes/index.route';
 import UsersRoute from '@routes/users.route';
 import validateEnv from '@utils/validateEnv';
-import AreasRoute from './routes/areas.route';
-import EntriesRoute from './routes/entries.route';
-import GroupsRoute from './routes/groups.route';
-import OutputsRoute from './routes/outputs.route';
-import ProcessRoute from './routes/process.route';
-import ToolsRoute from './routes/tools.route';
+import AreasRoute from '@routes/areas.route';
+import EntriesRoute from '@routes/entries.route';
+import GroupsRoute from '@routes/groups.route';
+import OutputsRoute from '@routes/outputs.route';
+import ProcessRoute from '@routes/process.route';
+import ToolsRoute from '@routes/tools.route';
 
 validateEnv();
 

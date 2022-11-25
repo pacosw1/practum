@@ -94,11 +94,6 @@ let ProcessService = class ProcessService {
                         entry: true
                     }
                 },
-                outputs: {
-                    include: {
-                        output: true
-                    }
-                },
                 tools: {
                     include: {
                         tool: true
@@ -121,6 +116,7 @@ let ProcessService = class ProcessService {
         if (findProcess || findProcess && !findProcess.active) throw new _httpException.HttpException(409, `Process with title ${data.name} already exists`);
         const connectEntries = Array.from(data.existingEntries.map((id)=>{
             return {
+                isExit: false,
                 entry: {
                     connect: {
                         id: id
@@ -130,6 +126,7 @@ let ProcessService = class ProcessService {
         }));
         const newEntries = Array.from(data.newEntries.map((newEntry)=>{
             return {
+                isExit: false,
                 entry: {
                     create: _objectSpread({}, newEntry)
                 }
@@ -137,7 +134,8 @@ let ProcessService = class ProcessService {
         }));
         const connectOutputs = Array.from(data.existingOutputs.map((id)=>{
             return {
-                output: {
+                isExit: true,
+                entry: {
                     connect: {
                         id: id
                     }
@@ -146,26 +144,9 @@ let ProcessService = class ProcessService {
         }));
         const newOutputs = Array.from(data.newOutputs.map((newOutput)=>{
             return {
-                output: {
-                    create: _objectSpread({}, newOutput)
-                }
-            };
-        }));
-        const newTestOutputs = Array.from(data.newOutputs.map((newOutput)=>{
-            return {
                 isExit: true,
-                output: {
-                    create: _objectSpread({}, newOutput)
-                }
-            };
-        }));
-        const testConnectOutputs = Array.from(data.existingOutputs.map((id)=>{
-            return {
                 entry: {
-                    isExit: true,
-                    connect: {
-                        id: id
-                    }
+                    create: _objectSpread({}, newOutput)
                 }
             };
         }));
@@ -193,12 +174,6 @@ let ProcessService = class ProcessService {
                 create: [
                     ...newEntries,
                     ...connectEntries,
-                    ...newTestOutputs,
-                    ...testConnectOutputs
-                ]
-            },
-            outputs: {
-                create: [
                     ...newOutputs,
                     ...connectOutputs
                 ]
@@ -263,6 +238,7 @@ let ProcessService = class ProcessService {
         for (const entry2 of data.existingEntries){
             if (!old.has(entry2)) {
                 connectEntries.push({
+                    isExit: false,
                     entry: {
                         connect: {
                             id: entry2
@@ -330,6 +306,7 @@ let ProcessService = class ProcessService {
         const newEntries = Array.from(data.newEntries.map((newEntry)=>{
             return {
                 entry: {
+                    isExit: false,
                     create: _objectSpread({}, newEntry)
                 }
             };
@@ -364,30 +341,23 @@ let ProcessService = class ProcessService {
             }
         };
         const entryClient = new _client.PrismaClient().entriesOnProcess;
-        const outputClient = new _client.PrismaClient().outputsOnProcess;
         const toolClient = new _client.PrismaClient().toolsOnProcess;
-        const deleteEntries = await entryClient.deleteMany({
+        await entryClient.deleteMany({
             where: {
                 processId: id,
                 entryId: {
                     in: disconnectEntries
-                }
+                },
+                isExit: false
             }
         });
-        const deleteOutputs = await outputClient.deleteMany({
+        await entryClient.deleteMany({
             where: {
                 processId: id,
-                outputId: {
+                entryId: {
                     in: disconnectOutputs
-                }
-            }
-        });
-        const deleteTools = await toolClient.deleteMany({
-            where: {
-                processId: id,
-                toolId: {
-                    in: disconnectTools
-                }
+                },
+                isExit: true
             }
         });
         const newProcess = await this.processes.update({

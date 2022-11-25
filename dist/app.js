@@ -16,8 +16,8 @@ const _morgan = _interopRequireDefault(require("morgan"));
 const _swaggerJsdoc = _interopRequireDefault(require("swagger-jsdoc"));
 const _swaggerUiExpress = _interopRequireDefault(require("swagger-ui-express"));
 const _config = require("./config");
-const _errorMiddleware = _interopRequireDefault(require("./middlewares/error.middleware.ts"));
-const _logger = require("./utils/logger.ts");
+const _errorMiddleware = _interopRequireDefault(require("./middlewares/error.middleware"));
+const _logger = require("./utils/logger");
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import ProcessService from '@/services/process.service';
-import { Entry, Process, EntriesOnProcess, } from '@prisma/client';
+import { Entry, Process, EntriesOnProcess } from '@prisma/client';
 import { CreateProcessDto } from '@/dtos/process.dto';
 
 class ProcessController {
@@ -18,7 +18,7 @@ class ProcessController {
 
   public getGivenAreaAndGroup = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { groupId, areaId } = req.params
+      const { groupId, areaId } = req.params;
       const processes: Process[] = await this.service.getGivenAreaAndGroup(Number(areaId), Number(groupId));
 
       res.status(200).json({ data: processes, message: 'findFiltered' });

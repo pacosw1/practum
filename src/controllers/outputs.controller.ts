@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Output } from '@prisma/client';
-import {  } from '@/dtos/groups.dto';
+import {} from '@/dtos/groups.dto';
 import OutputService from '@/services/output.service';
 import { CreateEntryExitDto } from '@/dtos/process.dto';
 

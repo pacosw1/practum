@@ -327,7 +327,7 @@ class ProcessService {
     await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectEntries }, isExit: false } });
     await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectOutputs }, isExit: true } });
 
-    const deleteTools = await toolClient.deleteMany({ where: { processId: id, toolId: { in: disconnectTools } } });
+    // const deleteTools = await toolClient.deleteMany({ where: { processId: id, toolId: { in: disconnectTools } } });
 
     const newProcess = await this.processes.update({ where: { id: id }, data: { ...finalData } });
     return newProcess;

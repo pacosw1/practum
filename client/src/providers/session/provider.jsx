@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { client } from "./../../config/environment";
+import { client } from "../../config/environment";
 
 const sessionContext = createContext({});
 
