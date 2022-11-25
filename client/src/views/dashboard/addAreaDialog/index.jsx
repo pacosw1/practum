@@ -1,24 +1,16 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
-import { client } from "../../../config/environment";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { client } from '../../../config/environment';
+import toast from 'react-hot-toast';
 
 const InitialName = {
-  name: "",
+  name: '',
 };
 
 const AddAreaDialog = ({ visible, setVisible, refetch }) => {
   const [area, setArea] = useState(InitialName);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     const { name, value } = e.target;
 
     setArea({
@@ -29,17 +21,18 @@ const AddAreaDialog = ({ visible, setVisible, refetch }) => {
 
   const closeDialog = () => {
     setVisible(false);
-    refetch();
     setArea(InitialName);
   };
 
   const createArea = async () => {
     try {
-      await client.post("areas", area);
+      await client.post('areas', area);
       refetch();
       closeDialog();
+      toast.success('Area creada');
     } catch (error) {
-      console.log("🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error", error);
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
+      toast.error('Error al crear');
     }
   };
 
@@ -49,33 +42,28 @@ const AddAreaDialog = ({ visible, setVisible, refetch }) => {
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant='caption' display='block' gutterBottom>
+            <Typography variant="caption" display="block" gutterBottom>
               Nombre de Area:
             </Typography>
             <TextField
-              id='name'
-              name='name'
-              type='text'
+              id="name"
+              name="name"
+              type="text"
               required
               value={area.name}
               onChange={handleInputChange}
               fullWidth
-              size='small'
-              margin='dense'
+              size="small"
+              margin="dense"
             />
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button color='error' variant='contained' onClick={closeDialog}>
+        <Button color="error" variant="contained" onClick={closeDialog}>
           Cancelar
         </Button>
-        <Button
-          color='success'
-          variant='contained'
-          onClick={createArea}
-          disabled={area.name === "" ? true : false}
-        >
+        <Button color="success" variant="contained" onClick={createArea} disabled={area.name === '' ? true : false}>
           Crear
         </Button>
       </DialogActions>

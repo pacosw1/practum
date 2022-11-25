@@ -1,8 +1,10 @@
 import { Add } from '@mui/icons-material';
 import {
+  Backdrop,
   Box,
   Button,
   Chip,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -21,6 +23,7 @@ import {
 import { grey } from '@mui/material/colors';
 import React, { useEffect, useState } from 'react';
 import { client } from '../../../config/environment';
+import toast from 'react-hot-toast';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -56,6 +59,10 @@ const InitialName = {
   description: '',
 };
 
+let idEntry = 0;
+let idOutput = 0;
+let idTool = 0;
+
 const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setActualProcess }) => {
   const [process, setProcess] = useState(InitialProcess);
 
@@ -70,6 +77,8 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
   const [newEntriesArray, setNewEntriesArray] = useState([]);
   const [newOutputsArray, setNewOutputsArray] = useState([]);
   const [newToolsArray, setNewToolsArray] = useState([]);
+
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -144,23 +153,46 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
   };
 
   const saveNewEntry = () => {
-    setNewEntriesArray([...newEntriesArray, newEntry]);
+    const aux = newEntry;
+    aux.id = idEntry;
+    setNewEntriesArray([...newEntriesArray, aux]);
     setNewEntry(InitialName);
+    idEntry += 1;
   };
 
   const saveNewOutput = () => {
-    setNewOutputsArray([...newOutputsArray, newOutput]);
+    const aux = newOutput;
+    aux.id = idOutput;
+    setNewOutputsArray([...newOutputsArray, aux]);
     setNewOutput(InitialName);
+    idOutput += 1;
   };
 
   const saveNewTool = () => {
-    setNewToolsArray([...newToolsArray, newTool]);
+    const aux = newTool;
+    aux.id = idTool;
+    setNewToolsArray([...newToolsArray, aux]);
     setNewTool(InitialName);
+    idTool += 1;
+  };
+
+  const onDeleteEntry = id => {
+    const aux = newEntriesArray.filter(entry => entry.id !== id);
+    setNewEntriesArray([...aux]);
+  };
+
+  const onDeleteOutput = id => {
+    const aux = newOutputsArray.filter(output => output.id !== id);
+    setNewOutputsArray([...aux]);
+  };
+
+  const onDeleteTool = id => {
+    const aux = newToolsArray.filter(tool => tool.id !== id);
+    setNewToolsArray([...aux]);
   };
 
   const closeDialog = () => {
     setVisible(false);
-    refetch();
     resetStates();
   };
 
@@ -176,9 +208,13 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     setNewEntriesArray([]);
     setNewOutputsArray([]);
     setNewToolsArray([]);
+    idEntry = 0;
+    idOutput = 0;
+    idTool = 0;
   };
 
   const updateProcess = async () => {
+    setLoading(true);
     let auxProcess = process;
     auxProcess.existingEntries = process.existingEntries.map(ent => {
       return ent.id;
@@ -192,16 +228,36 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
       return ent.id;
     });
 
-    auxProcess.newEntries = newEntriesArray;
-    auxProcess.newOutputs = newOutputsArray;
-    auxProcess.newTools = newToolsArray;
+    auxProcess.newEntries = newEntriesArray.map(({ id, ...item }) => item);
+    auxProcess.newOutputs = newOutputsArray.map(({ id, ...item }) => item);
+    auxProcess.newTools = newToolsArray.map(({ id, ...item }) => item);
 
     try {
       await client.put(`process/${actualProcess.id}`, auxProcess);
       refetch();
+      setLoading(false);
       closeDialog();
+      toast.success('Proceso modificado');
     } catch (error) {
       console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
+      setLoading(false);
+      toast.error('Error editar');
+    }
+  };
+
+  const deleteProcess = async () => {
+    setLoading(true);
+
+    try {
+      await client.delete(`process/${actualProcess.id}`);
+      refetch();
+      setLoading(false);
+      closeDialog();
+      toast.success('Proceso eliminado');
+    } catch (error) {
+      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
+      setLoading(false);
+      toast.error('Error al eliminar');
     }
   };
 
@@ -307,6 +363,9 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
         },
       }}
     >
+      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <DialogTitle>Editar Proceso</DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
@@ -347,18 +406,9 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                 bgcolor: 'white',
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography fontWeight={600}>Entradas</Typography>
-                <IconButton disabled={!(newEntry.name && newEntry.description)} onClick={saveNewEntry}>
-                  <Add />
-                </IconButton>
-              </Box>
+              <Typography fontWeight={600} align="center">
+                Entradas
+              </Typography>
 
               <Typography variant="caption" display="block" gutterBottom>
                 Nombre:
@@ -376,7 +426,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripción:
+                Descripcion:
               </Typography>
               <TextField
                 id="description"
@@ -390,13 +440,31 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                 fullWidth
               />
 
-              <Typography variant="caption" fontWeight={600} color={grey[400]} align="right">
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Add />}
+                sx={{ ml: 'auto', mt: 1 }}
+                disabled={!(newEntry.name && newEntry.description)}
+                onClick={saveNewEntry}
+              >
+                Agregar
+              </Button>
+
+              <Typography variant="caption" fontWeight={600} color={grey[400]}>
                 Entradas agregadas manualmente
               </Typography>
 
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 2 }}>
                 {newEntriesArray.map((value, index) => (
-                  <Chip key={index} label={value.name} sx={{ fontWeight: 600 }} />
+                  <Chip
+                    key={index}
+                    label={value.name}
+                    sx={{ fontWeight: 600 }}
+                    onDelete={() => {
+                      onDeleteEntry(value.id);
+                    }}
+                  />
                 ))}
               </Box>
 
@@ -438,18 +506,9 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                 bgcolor: 'white',
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography fontWeight={600}>Salidas</Typography>
-                <IconButton disabled={!(newOutput.name && newOutput.description)} onClick={saveNewOutput}>
-                  <Add />
-                </IconButton>
-              </Box>
+              <Typography fontWeight={600} align="center">
+                Salidas
+              </Typography>
 
               <Typography variant="caption" display="block" gutterBottom>
                 Nombre:
@@ -467,7 +526,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripción:
+                Descripcion:
               </Typography>
               <TextField
                 id="description"
@@ -481,13 +540,31 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                 fullWidth
               />
 
-              <Typography variant="caption" fontWeight={600} color={grey[400]} align="right">
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Add />}
+                sx={{ ml: 'auto', mt: 1 }}
+                disabled={!(newOutput.name && newOutput.description)}
+                onClick={saveNewOutput}
+              >
+                Agregar
+              </Button>
+
+              <Typography variant="caption" fontWeight={600} color={grey[400]} align="left">
                 Salidas agregadas manualmente
               </Typography>
 
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 2 }}>
                 {newOutputsArray.map((value, index) => (
-                  <Chip key={index} label={value.name} sx={{ fontWeight: 600 }} />
+                  <Chip
+                    key={index}
+                    label={value.name}
+                    sx={{ fontWeight: 600 }}
+                    onDelete={() => {
+                      onDeleteOutput(value.id);
+                    }}
+                  />
                 ))}
               </Box>
 
@@ -530,18 +607,9 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                 bgcolor: 'white',
               }}
             >
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography fontWeight={600}>Herramientas</Typography>
-                <IconButton disabled={!(newTool.name && newTool.description)} onClick={saveNewTool}>
-                  <Add />
-                </IconButton>
-              </Box>
+              <Typography fontWeight={600} align="center">
+                Herramientas
+              </Typography>
 
               <Typography variant="caption" display="block" gutterBottom>
                 Nombre:
@@ -559,7 +627,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
               />
 
               <Typography variant="caption" display="block" gutterBottom>
-                Descripción:
+                Descripcion:
               </Typography>
               <TextField
                 id="description"
@@ -572,13 +640,31 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
                 margin="dense"
               />
 
-              <Typography variant="caption" fontWeight={600} color={grey[400]} align="right">
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<Add />}
+                sx={{ ml: 'auto', mt: 1 }}
+                disabled={!(newTool.name && newTool.description)}
+                onClick={saveNewTool}
+              >
+                Agregar
+              </Button>
+
+              <Typography variant="caption" fontWeight={600} color={grey[400]} align="left">
                 Herramientas agregadas manualmente
               </Typography>
 
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, p: 2 }}>
                 {newToolsArray.map((value, index) => (
-                  <Chip key={index} label={value.name} sx={{ fontWeight: 600 }} />
+                  <Chip
+                    key={index}
+                    label={value.name}
+                    sx={{ fontWeight: 600 }}
+                    onDelete={() => {
+                      onDeleteTool(value.id);
+                    }}
+                  />
                 ))}
               </Box>
 
@@ -613,7 +699,10 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button color="error" variant="contained" onClick={closeDialog}>
+        <Button color="error" variant="contained" onClick={deleteProcess}>
+          Eliminar
+        </Button>
+        <Button variant="contained" onClick={closeDialog}>
           Cancelar
         </Button>
         <Button color="success" variant="contained" onClick={updateProcess} disabled={process.name === '' ? true : false}>
