@@ -5,8 +5,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "npm run prisma:push --accept-data-loss && npm run build && cross-env NODE_ENV=production node dist/server.js",
-    "prisma:push": "npx prisma db push",
+    "start": "npm run prisma:push && npm run build && cross-env NODE_ENV=production node dist/server.js",
+    "prisma:push": "npx prisma db push --accept-data-loss",
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "swc src -d dist --source-maps --copy-files",
     "build:tsc": "tsc && tsc-alias",
