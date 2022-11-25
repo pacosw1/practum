@@ -24,7 +24,7 @@ class ProcessService {
   public async getGivenId(id: number): Promise<
     Process & {
       entries: EntriesOnProcess[];
-      outputs: OutputsOnProcess[];
+      // outputs: OutputsOnProcess[];
     }
   > {
     if (isEmpty(id)) throw new HttpException(400, 'id is empty');
@@ -37,11 +37,11 @@ class ProcessService {
             entry: true,
           },
         },
-        outputs: {
-          include: {
-            output: true,
-          },
-        },
+        // outputs: {
+        //   include: {
+        //     output: true,
+        //   },
+        // },
         tools: {
           include: {
             tool: true,
@@ -67,6 +67,7 @@ class ProcessService {
     const connectEntries = Array.from(
       data.existingEntries.map(id => {
         return {
+          isExit: false,
           entry: {
             connect: {
               id: id,
@@ -79,6 +80,7 @@ class ProcessService {
     const newEntries = Array.from(
       data.newEntries.map(newEntry => {
         return {
+          isExit: false,
           entry: {
             create: {
               ...newEntry,
@@ -91,7 +93,8 @@ class ProcessService {
     const connectOutputs = Array.from(
       data.existingOutputs.map(id => {
         return {
-          output: {
+          isExit: true,
+          entry: {
             connect: {
               id: id,
             },
@@ -103,7 +106,8 @@ class ProcessService {
     const newOutputs = Array.from(
       data.newOutputs.map(newOutput => {
         return {
-          output: {
+          isExit: true,
+          entry: {
             create: {
               ...newOutput,
             },
@@ -141,10 +145,7 @@ class ProcessService {
       areaId: data.areaId,
       groupId: data.groupId,
       entries: {
-        create: [...newEntries, ...connectEntries],
-      },
-      outputs: {
-        create: [...newOutputs, ...connectOutputs],
+        create: [...newEntries, ...connectEntries, ...newOutputs, ...connectOutputs],
       },
       tools: {
         create: [...newTools, ...connectTools],
@@ -167,40 +168,44 @@ class ProcessService {
             entry: true,
           },
         },
-        outputs: {
-          include: {
-            output: true,
-          },
-        },
+        // outputs: {
+        //   include: {
+        //     output: true,
+        //   },
+        // },
       },
     });
 
     if (!findProcess || (findProcess && !findProcess.active)) throw new HttpException(409, "User doesn't exist");
 
-    let oldEntries = await new PrismaClient().entriesOnProcess.findMany({
-      where: { processId: id },
+    const oldEntries = await new PrismaClient().entriesOnProcess.findMany({
+      where: { processId: id, isExit: false },
     });
 
-    let oldOutputs = await new PrismaClient().outputsOnProcess.findMany({
-      where: { processId: id },
+    const oldOutputs = await new PrismaClient().entriesOnProcess.findMany({
+      where: { processId: id, isExit: true },
     });
 
-    let oldTools = await new PrismaClient().toolsOnProcess.findMany({
+    // let testOldOutputs = await new PrismaClient().entriesOnProcess.findMany({
+    //   where: { processId: id, isExit: true },
+    // });
+
+    const oldTools = await new PrismaClient().toolsOnProcess.findMany({
       where: { processId: id },
     });
 
     //TODO make a function for this
 
-    let old = new Set();
-    let updated = new Set();
-    let disconnectEntries = [];
-    let connectEntries = [];
+    const old = new Set();
+    const updated = new Set();
+    const disconnectEntries = [];
+    const connectEntries = [];
 
-    for (let entry of data.existingEntries) {
+    for (const entry of data.existingEntries) {
       updated.add(entry);
     }
 
-    for (let entry of oldEntries) {
+    for (const entry of oldEntries) {
       old.add(entry.entryId);
 
       if (!updated.has(entry.entryId)) {
@@ -208,45 +213,45 @@ class ProcessService {
       }
     }
 
-    for (let entry of data.existingEntries) {
+    for (const entry of data.existingEntries) {
       if (!old.has(entry)) {
-        connectEntries.push({ entry: { connect: { id: entry } } });
+        connectEntries.push({ isExit: false, entry: { connect: { id: entry } } });
       }
     }
 
-    let oldOut = new Set();
-    let updatedOut = new Set();
-    let disconnectOutputs = [];
-    let connectOutputs = [];
+    const oldOut = new Set();
+    const updatedOut = new Set();
+    const disconnectOutputs = [];
+    const connectOutputs = [];
 
-    for (let output of data.existingOutputs) {
+    for (const output of data.existingOutputs) {
       updated.add(output);
     }
 
-    for (let output of oldOutputs) {
-      old.add(output.outputId);
+    for (const output of oldOutputs) {
+      old.add(output.entryId);
 
-      if (!updatedOut.has(output.outputId)) {
-        disconnectOutputs.push(output.outputId);
+      if (!updatedOut.has(output.entryId)) {
+        disconnectOutputs.push(output.entryId);
       }
     }
 
-    for (let output of data.existingOutputs) {
+    for (const output of data.existingOutputs) {
       if (!oldOut.has(output)) {
-        connectOutputs.push({ output: { connect: { id: output } } });
+        connectOutputs.push({ isExit: true, entry: { connect: { id: output } } });
       }
     }
 
-    let oldToolSet = new Set();
-    let updatedTools = new Set();
-    let disconnectTools = [];
-    let connectTools = [];
+    const oldToolSet = new Set();
+    const updatedTools = new Set();
+    const disconnectTools = [];
+    const connectTools = [];
 
-    for (let tool of data.existingTools) {
+    for (const tool of data.existingTools) {
       updatedTools.add(tool);
     }
 
-    for (let tool of oldTools) {
+    for (const tool of oldTools) {
       oldToolSet.add(tool.toolId);
 
       if (!updatedTools.has(tool.toolId)) {
@@ -254,13 +259,13 @@ class ProcessService {
       }
     }
 
-    for (let tool of data.existingTools) {
+    for (const tool of data.existingTools) {
       if (!oldToolSet.has(tool)) {
         connectTools.push({ tool: { connect: { id: tool } } });
       }
     }
 
-    let newTools = Array.from(
+    const newTools = Array.from(
       data.newTools.map(newTool => {
         return {
           tool: {
@@ -272,9 +277,23 @@ class ProcessService {
       }),
     );
 
-    let newEntries = Array.from(
+    const newEntries = Array.from(
       data.newEntries.map(newEntry => {
         return {
+          entry: {
+            isExit: false,
+            create: {
+              ...newEntry,
+            },
+          },
+        };
+      }),
+    );
+
+    const newOutputs = Array.from(
+      data.newOutputs.map(newEntry => {
+        return {
+          isExit: true,
           entry: {
             create: {
               ...newEntry,
@@ -284,43 +303,31 @@ class ProcessService {
       }),
     );
 
-    let newOutputs = Array.from(
-      data.newOutputs.map(newOutput => {
-        return {
-          output: {
-            create: {
-              ...newOutput,
-            },
-          },
-        };
-      }),
-    );
-
     data.areaId = Number(data.areaId);
     data.groupId = Number(data.groupId);
 
-    let finalData = {
+    const finalData = {
       name: data.name,
       areaId: data.areaId,
       groupId: data.groupId,
       entries: {
-        create: [...newEntries, ...connectEntries],
+        create: [...newEntries, ...connectEntries, ...newOutputs, ...connectOutputs],
       },
-      outputs: {
-        create: [...newOutputs, ...connectOutputs],
-      },
+      // outputs: {
+      //   // create: [...newOutputs, ...connectOutputs],
+      // },
       tools: {
         create: [...newTools, ...connectTools],
       },
     };
 
-    let entryClient = new PrismaClient().entriesOnProcess;
-    let outputClient = new PrismaClient().outputsOnProcess;
-    let toolClient = new PrismaClient().toolsOnProcess;
+    const entryClient = new PrismaClient().entriesOnProcess;
+    const toolClient = new PrismaClient().toolsOnProcess;
 
-    let deleteEntries = await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectEntries } } });
-    let deleteOutputs = await outputClient.deleteMany({ where: { processId: id, outputId: { in: disconnectOutputs } } });
-    let deleteTools = await toolClient.deleteMany({ where: { processId: id, toolId: { in: disconnectTools } } });
+    await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectEntries }, isExit: false } });
+    await entryClient.deleteMany({ where: { processId: id, entryId: { in: disconnectOutputs }, isExit: true } });
+
+    const deleteTools = await toolClient.deleteMany({ where: { processId: id, toolId: { in: disconnectTools } } });
 
     const newProcess = await this.processes.update({ where: { id: id }, data: { ...finalData } });
     return newProcess;

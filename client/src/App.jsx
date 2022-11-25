@@ -6,7 +6,7 @@ import { useSession } from './providers/session';
 import Auth from './views/auth';
 import Dashboard from './views/dashboard';
 import Users from './views/users';
-import Process from './views/process';
+import ListS from './views/list';
 
 const App = () => {
   const { isLogged, loading } = useSession();
@@ -28,7 +28,7 @@ const App = () => {
       <CssBaseline />
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/process" element={<Process />} />
+        <Route path="/list" element={<ListS />} />
         <Route path="/users" element={<Users />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

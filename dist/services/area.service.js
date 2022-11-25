@@ -37,11 +37,38 @@ function _objectSpread(target) {
     }
     return target;
 }
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        if (enumerableOnly) {
+            symbols = symbols.filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+            });
+        }
+        keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _objectSpreadProps(target, source) {
+    source = source != null ? source : {};
+    if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+        ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
 let AreaService = class AreaService {
     async getAllAreas() {
         const allAreas = await this.areas.findMany({
+            where: {
+                active: true
+            },
             orderBy: {
-                id: 'asc'
+                order: 'asc'
             }
         });
         return allAreas;
@@ -53,7 +80,7 @@ let AreaService = class AreaService {
                 id: id
             }
         });
-        if (!findArea) throw new _httpException.HttpException(409, "Area doesn't exist");
+        if (!findArea || findArea && !findArea.active) throw new _httpException.HttpException(409, "Area doesn't exist");
         return findArea;
     }
     async createArea(areaData) {
@@ -64,8 +91,15 @@ let AreaService = class AreaService {
             }
         });
         if (findArea) throw new _httpException.HttpException(409, `Area with title ${areaData.name} already exists`);
+        const count = await this.areas.count({
+            where: {
+                active: true
+            }
+        });
         const createAreaData = await this.areas.create({
-            data: _objectSpread({}, areaData)
+            data: _objectSpreadProps(_objectSpread({}, areaData), {
+                order: count + 1
+            })
         });
         return createAreaData;
     }
@@ -76,7 +110,7 @@ let AreaService = class AreaService {
                 id: id
             }
         });
-        if (!findArea) throw new _httpException.HttpException(409, "User doesn't exist");
+        if (!findArea || findArea && !findArea.active) throw new _httpException.HttpException(409, "User doesn't exist");
         const newArea = await this.areas.update({
             where: {
                 id: id
@@ -93,10 +127,13 @@ let AreaService = class AreaService {
             }
         });
         if (!findArea) throw new _httpException.HttpException(409, "User doesn't exist");
-        const deleteAreaData = await this.areas.delete({
+        const deleteAreaData = await this.areas.update({
             where: {
                 id: id
-            }
+            },
+            data: _objectSpreadProps(_objectSpread({}, findArea), {
+                active: false
+            })
         });
         return deleteAreaData;
     }

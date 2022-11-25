@@ -1,7 +1,9 @@
 import { Add } from '@mui/icons-material';
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   IconButton,
   Menu,
   MenuItem,
@@ -51,10 +53,14 @@ const Dashboard = () => {
   const [editAreaDialogShow, setEditAreaDialogShow] = useState(false);
   const [editProcessDialogShow, setEditProcessDialogShow] = useState(false);
 
-  const refetch = () => {
-    loadGroups();
-    loadAreas();
-    loadProcesses();
+  const [loading, setLoading] = useState(false);
+
+  const refetch = async () => {
+    setLoading(true);
+    await loadGroups();
+    await loadAreas();
+    await loadProcesses();
+    setLoading(false);
   };
 
   const loadGroups = async () => {
@@ -107,9 +113,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     async function fetchData() {
+      setLoading(true);
       await loadGroups();
       await loadAreas();
       await loadProcesses();
+      setLoading(false);
     }
     fetchData();
   }, []);
@@ -138,6 +146,9 @@ const Dashboard = () => {
 
   return (
     <>
+      <Backdrop sx={{ color: '#fff', zIndex: theme => theme.zIndex.drawer + 1 }} open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 4 }}>
         <Button
           variant="contained"
@@ -217,7 +228,9 @@ const Dashboard = () => {
                       borderRadius: 1,
                     }}
                   >
-                    <b>{g?.name}</b>
+                    <b>
+                      {g?.order} {g?.name}
+                    </b>
                   </TableCell>
                 </Tooltip>
               ))}
@@ -241,7 +254,9 @@ const Dashboard = () => {
                     scope="row"
                     align="center"
                   >
-                    <b> {a.name}</b>
+                    <b>
+                      {a?.order} {a.name}
+                    </b>
                   </TableCell>
                 </Tooltip>
 

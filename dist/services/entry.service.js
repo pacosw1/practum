@@ -37,11 +37,38 @@ function _objectSpread(target) {
     }
     return target;
 }
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        if (enumerableOnly) {
+            symbols = symbols.filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+            });
+        }
+        keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _objectSpreadProps(target, source) {
+    source = source != null ? source : {};
+    if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+        ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
 let EntryService = class EntryService {
     async getAll() {
         const all = await this.entries.findMany({
             orderBy: {
                 id: 'asc'
+            },
+            where: {
+                active: true
             }
         });
         return all;
@@ -66,7 +93,7 @@ let EntryService = class EntryService {
                 id: id
             }
         });
-        if (!findEntry) throw new _httpException.HttpException(409, "Entry doesn't exist");
+        if (!findEntry || findEntry && !findEntry.active) throw new _httpException.HttpException(409, "Entry doesn't exist");
         const newEntry = await this.entries.update({
             where: {
                 id: id
@@ -83,10 +110,19 @@ let EntryService = class EntryService {
             }
         });
         if (!findEntry) throw new _httpException.HttpException(409, "User doesn't exist");
-        const deleteEntry = await this.entries.delete({
+        const deleted = await new _client.PrismaClient().entriesOnProcess.deleteMany({
+            where: {
+                entryId: id
+            }
+        });
+        console.log(deleted);
+        const deleteEntry = await this.entries.update({
             where: {
                 id: id
-            }
+            },
+            data: _objectSpreadProps(_objectSpread({}, findEntry), {
+                active: false
+            })
         });
         return deleteEntry;
     }

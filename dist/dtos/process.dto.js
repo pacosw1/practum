@@ -71,6 +71,11 @@ __decorate([
     (0, _classValidator.IsString)(),
     __metadata("design:type", String)
 ], CreateEntryExitDto.prototype, "description", void 0);
+__decorate([
+    (0, _classValidator.IsOptional)(),
+    (0, _classValidator.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], CreateEntryExitDto.prototype, "isExit", void 0);
 let GetFilteredProcessesDto = class GetFilteredProcessesDto {
 };
 __decorate([

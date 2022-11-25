@@ -37,11 +37,38 @@ function _objectSpread(target) {
     }
     return target;
 }
+function ownKeys(object, enumerableOnly) {
+    var keys = Object.keys(object);
+    if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(object);
+        if (enumerableOnly) {
+            symbols = symbols.filter(function(sym) {
+                return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+            });
+        }
+        keys.push.apply(keys, symbols);
+    }
+    return keys;
+}
+function _objectSpreadProps(target, source) {
+    source = source != null ? source : {};
+    if (Object.getOwnPropertyDescriptors) {
+        Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+        ownKeys(Object(source)).forEach(function(key) {
+            Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+        });
+    }
+    return target;
+}
 let ProcessService = class ProcessService {
     async getAll() {
         const all = await this.processes.findMany({
             orderBy: {
                 id: 'asc'
+            },
+            where: {
+                active: true
             }
         });
         return all;
@@ -79,7 +106,7 @@ let ProcessService = class ProcessService {
                 }
             }
         });
-        if (!findProcess) throw new _httpException.HttpException(409, "Area doesn't exist");
+        if (!findProcess || findProcess && !findProcess.active) throw new _httpException.HttpException(409, "Area doesn't exist");
         return findProcess;
     }
     async create(data) {
@@ -91,7 +118,7 @@ let ProcessService = class ProcessService {
                 name: data.name
             }
         });
-        if (findProcess) throw new _httpException.HttpException(409, `Process with title ${data.name} already exists`);
+        if (findProcess || findProcess && !findProcess.active) throw new _httpException.HttpException(409, `Process with title ${data.name} already exists`);
         const connectEntries = Array.from(data.existingEntries.map((id)=>{
             return {
                 entry: {
@@ -124,6 +151,24 @@ let ProcessService = class ProcessService {
                 }
             };
         }));
+        const newTestOutputs = Array.from(data.newOutputs.map((newOutput)=>{
+            return {
+                isExit: true,
+                output: {
+                    create: _objectSpread({}, newOutput)
+                }
+            };
+        }));
+        const testConnectOutputs = Array.from(data.existingOutputs.map((id)=>{
+            return {
+                entry: {
+                    isExit: true,
+                    connect: {
+                        id: id
+                    }
+                }
+            };
+        }));
         const connectTools = Array.from(data.existingTools.map((id)=>{
             return {
                 tool: {
@@ -147,7 +192,9 @@ let ProcessService = class ProcessService {
             entries: {
                 create: [
                     ...newEntries,
-                    ...connectEntries
+                    ...connectEntries,
+                    ...newTestOutputs,
+                    ...testConnectOutputs
                 ]
             },
             outputs: {
@@ -179,44 +226,41 @@ let ProcessService = class ProcessService {
                     include: {
                         entry: true
                     }
-                },
-                outputs: {
-                    include: {
-                        output: true
-                    }
                 }
             }
         });
-        if (!findProcess) throw new _httpException.HttpException(409, "User doesn't exist");
-        let oldEntries = await new _client.PrismaClient().entriesOnProcess.findMany({
+        if (!findProcess || findProcess && !findProcess.active) throw new _httpException.HttpException(409, "User doesn't exist");
+        const oldEntries = await new _client.PrismaClient().entriesOnProcess.findMany({
+            where: {
+                processId: id,
+                isExit: false
+            }
+        });
+        const oldOutputs = await new _client.PrismaClient().entriesOnProcess.findMany({
+            where: {
+                processId: id,
+                isExit: true
+            }
+        });
+        const oldTools = await new _client.PrismaClient().toolsOnProcess.findMany({
             where: {
                 processId: id
             }
         });
-        let oldOutputs = await new _client.PrismaClient().outputsOnProcess.findMany({
-            where: {
-                processId: id
-            }
-        });
-        let oldTools = await new _client.PrismaClient().toolsOnProcess.findMany({
-            where: {
-                processId: id
-            }
-        });
-        let old = new Set();
-        let updated = new Set();
-        let disconnectEntries = [];
-        let connectEntries = [];
-        for (let entry of data.existingEntries){
+        const old = new Set();
+        const updated = new Set();
+        const disconnectEntries = [];
+        const connectEntries = [];
+        for (const entry of data.existingEntries){
             updated.add(entry);
         }
-        for (let entry1 of oldEntries){
+        for (const entry1 of oldEntries){
             old.add(entry1.entryId);
             if (!updated.has(entry1.entryId)) {
                 disconnectEntries.push(entry1.entryId);
             }
         }
-        for (let entry2 of data.existingEntries){
+        for (const entry2 of data.existingEntries){
             if (!old.has(entry2)) {
                 connectEntries.push({
                     entry: {
@@ -227,23 +271,24 @@ let ProcessService = class ProcessService {
                 });
             }
         }
-        let oldOut = new Set();
-        let updatedOut = new Set();
-        let disconnectOutputs = [];
-        let connectOutputs = [];
-        for (let output of data.existingOutputs){
+        const oldOut = new Set();
+        const updatedOut = new Set();
+        const disconnectOutputs = [];
+        const connectOutputs = [];
+        for (const output of data.existingOutputs){
             updated.add(output);
         }
-        for (let output1 of oldOutputs){
-            old.add(output1.outputId);
-            if (!updatedOut.has(output1.outputId)) {
-                disconnectOutputs.push(output1.outputId);
+        for (const output1 of oldOutputs){
+            old.add(output1.entryId);
+            if (!updatedOut.has(output1.entryId)) {
+                disconnectOutputs.push(output1.entryId);
             }
         }
-        for (let output2 of data.existingOutputs){
+        for (const output2 of data.existingOutputs){
             if (!oldOut.has(output2)) {
                 connectOutputs.push({
-                    output: {
+                    isExit: true,
+                    entry: {
                         connect: {
                             id: output2
                         }
@@ -251,20 +296,20 @@ let ProcessService = class ProcessService {
                 });
             }
         }
-        let oldToolSet = new Set();
-        let updatedTools = new Set();
-        let disconnectTools = [];
-        let connectTools = [];
-        for (let tool of data.existingTools){
+        const oldToolSet = new Set();
+        const updatedTools = new Set();
+        const disconnectTools = [];
+        const connectTools = [];
+        for (const tool of data.existingTools){
             updatedTools.add(tool);
         }
-        for (let tool1 of oldTools){
+        for (const tool1 of oldTools){
             oldToolSet.add(tool1.toolId);
             if (!updatedTools.has(tool1.toolId)) {
                 disconnectTools.push(tool1.toolId);
             }
         }
-        for (let tool2 of data.existingTools){
+        for (const tool2 of data.existingTools){
             if (!oldToolSet.has(tool2)) {
                 connectTools.push({
                     tool: {
@@ -275,41 +320,38 @@ let ProcessService = class ProcessService {
                 });
             }
         }
-        let newTools = Array.from(data.newTools.map((newTool)=>{
+        const newTools = Array.from(data.newTools.map((newTool)=>{
             return {
                 tool: {
                     create: _objectSpread({}, newTool)
                 }
             };
         }));
-        let newEntries = Array.from(data.newEntries.map((newEntry)=>{
+        const newEntries = Array.from(data.newEntries.map((newEntry)=>{
             return {
                 entry: {
                     create: _objectSpread({}, newEntry)
                 }
             };
         }));
-        let newOutputs = Array.from(data.newOutputs.map((newOutput)=>{
+        const newOutputs = Array.from(data.newOutputs.map((newEntry)=>{
             return {
-                output: {
-                    create: _objectSpread({}, newOutput)
+                isExit: true,
+                entry: {
+                    create: _objectSpread({}, newEntry)
                 }
             };
         }));
         data.areaId = Number(data.areaId);
         data.groupId = Number(data.groupId);
-        let finalData = {
+        const finalData = {
             name: data.name,
             areaId: data.areaId,
             groupId: data.groupId,
             entries: {
                 create: [
                     ...newEntries,
-                    ...connectEntries
-                ]
-            },
-            outputs: {
-                create: [
+                    ...connectEntries,
                     ...newOutputs,
                     ...connectOutputs
                 ]
@@ -321,10 +363,10 @@ let ProcessService = class ProcessService {
                 ]
             }
         };
-        let entryClient = new _client.PrismaClient().entriesOnProcess;
-        let outputClient = new _client.PrismaClient().outputsOnProcess;
-        let toolClient = new _client.PrismaClient().toolsOnProcess;
-        let deleteEntries = await entryClient.deleteMany({
+        const entryClient = new _client.PrismaClient().entriesOnProcess;
+        const outputClient = new _client.PrismaClient().outputsOnProcess;
+        const toolClient = new _client.PrismaClient().toolsOnProcess;
+        const deleteEntries = await entryClient.deleteMany({
             where: {
                 processId: id,
                 entryId: {
@@ -332,7 +374,7 @@ let ProcessService = class ProcessService {
                 }
             }
         });
-        let deleteOutputs = await outputClient.deleteMany({
+        const deleteOutputs = await outputClient.deleteMany({
             where: {
                 processId: id,
                 outputId: {
@@ -340,7 +382,7 @@ let ProcessService = class ProcessService {
                 }
             }
         });
-        let deleteTools = await toolClient.deleteMany({
+        const deleteTools = await toolClient.deleteMany({
             where: {
                 processId: id,
                 toolId: {
@@ -364,10 +406,13 @@ let ProcessService = class ProcessService {
             }
         });
         if (!findProcess) throw new _httpException.HttpException(409, "User doesn't exist");
-        const deleteProcess = await this.processes.delete({
+        const deleteProcess = await this.processes.update({
             where: {
                 id: id
-            }
+            },
+            data: _objectSpreadProps(_objectSpread({}, findProcess), {
+                active: false
+            })
         });
         return deleteProcess;
     }
