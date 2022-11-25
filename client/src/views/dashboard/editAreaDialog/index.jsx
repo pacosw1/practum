@@ -14,10 +14,17 @@ const EditAreaDialog = ({ visible, setVisible, refetch, areaToEdit, setAreaToEdi
   const handleInputChange = e => {
     const { name, value } = e.target;
 
-    setArea({
-      ...area,
-      [name]: value,
-    });
+    if (e.target.type === 'number') {
+      setArea({
+        ...area,
+        [name]: Number(value),
+      });
+    } else {
+      setArea({
+        ...area,
+        [name]: value,
+      });
+    }
   };
 
   const closeDialog = () => {
