@@ -118,10 +118,10 @@ const ListS = () => {
         </Backdrop>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={5}>
             <Box sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
               <Box sx={{ p: 2, display: 'flex', flexDirection: ' row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography fontWeight={600}>Entradas</Typography>
+                <Typography fontWeight={600}>Entradas / Salidas</Typography>
 
                 <IconButton
                   onClick={() => {
@@ -157,46 +157,7 @@ const ListS = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} sm={4}>
-            <Box sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
-              <Box sx={{ p: 2, display: 'flex', flexDirection: ' row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography fontWeight={600}>Salidas</Typography>
-
-                <IconButton
-                  onClick={() => {
-                    setAddOutputShow(true);
-                  }}
-                >
-                  <Add />
-                </IconButton>
-              </Box>
-
-              <List sx={{ maxHeight: '80vh', overflow: 'auto' }}>
-                {allOutputs.map(output => (
-                  <>
-                    <ListItem
-                      secondaryAction={
-                        <IconButton
-                          edge="end"
-                          aria-label="delete"
-                          onClick={() => {
-                            openOutputDialog(output);
-                          }}
-                        >
-                          <Edit />
-                        </IconButton>
-                      }
-                    >
-                      <ListItemText primary={output.name} />
-                    </ListItem>
-                    <Divider />
-                  </>
-                ))}
-              </List>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={5}>
             <Box sx={{ bgcolor: 'background.paper', borderRadius: 2 }}>
               <Box sx={{ p: 2, display: 'flex', flexDirection: ' row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography fontWeight={600}>Herramientas</Typography>
