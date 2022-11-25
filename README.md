@@ -26,4 +26,10 @@ To run the local server, run `npm run dev`
 
 For more commands, check the scripts section inside `package.json` in the root directory
 
+#Deployment
 
+Go to the client directory and run npm build
+
+This will build the production frontend
+
+We can then run the backend and frontend together
