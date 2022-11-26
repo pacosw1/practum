@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npm run prisma:push && npm run build && cross-env NODE_ENV=production node dist/server.js",
     "prisma:push": "npx prisma db push --accept-data-loss",
-    "dev": "cross-env NODE_ENV=development nodemon",
+    "dev": "npm run prisma:push && cross-env NODE_ENV=development nodemon",
     "build": "swc src -d dist --source-maps --copy-files",
     "build:tsc": "tsc && tsc-alias",
     "test": "jest --forceExit --detectOpenHandles",
@@ -23,8 +23,7 @@
     "schema": "src/prisma/schema.prisma"
   },
   "dependencies": {
-    "@prisma/client": "^4.1.0",
-    "prisma": "^4.1.0",
+    "@prisma/client": "^4.4.0",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -73,7 +72,7 @@
     "nodemon": "^2.0.19",
     "pm2": "^5.2.0",
     "prettier": "^2.7.1",
-    "prisma": "^4.1.0",
+    "prisma": "^4.4.0",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
