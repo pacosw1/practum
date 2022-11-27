@@ -280,8 +280,8 @@ class ProcessService {
     const newEntries = Array.from(
       data.newEntries.map(newEntry => {
         return {
+          isExit: false,
           entry: {
-            isExit: false,
             create: {
               ...newEntry,
             },
