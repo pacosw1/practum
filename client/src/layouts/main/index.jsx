@@ -22,6 +22,7 @@ import { Toaster } from 'react-hot-toast';
 
 const drawerWidth = 240;
 
+// Use default AppBar from Material UI
 const Bar = styled(AppBar, {
   shouldForwardProp: prop => prop !== 'open',
 })(({ theme, open }) => ({
@@ -40,6 +41,7 @@ const Bar = styled(AppBar, {
   }),
 }));
 
+// Use default Drawer from Material UI
 const LeftDrawer = styled(Drawer, {
   shouldForwardProp: prop => prop !== 'open',
 })(({ theme, open }) => ({

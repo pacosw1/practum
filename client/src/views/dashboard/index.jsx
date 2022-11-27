@@ -29,11 +29,10 @@ import EditGroupDialog from './editGroupDialog';
 import EditProcessDialog from './editProcessDialog';
 
 const Dashboard = () => {
+  // Material UI default menu states
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-
   const [anchorEls, setAnchorEls] = useState(null);
-  const opens = Boolean(anchorEls);
 
   const [groups, setGroups] = useState([]);
   const [areas, setAreas] = useState([]);
@@ -41,60 +40,20 @@ const Dashboard = () => {
   const [global, setGlobal] = useState([]);
   const [actualCoor, setActualCoor] = useState();
 
+  // States to pass which data to edit
   const [editGroup, setEditGroup] = useState();
   const [editArea, setEditArea] = useState();
   const [editProcess, setEditProcess] = useState();
 
+  // States to control dialogs visibility
   const [addGroupDialogShow, setAddGroupDialogShow] = useState(false);
   const [addAreaDialogShow, setAddAreaDialogShow] = useState(false);
   const [addProcessDialogShow, setAddProcessDialogShow] = useState(false);
-
   const [editGroupDialogShow, setEditGroupDialogShow] = useState(false);
   const [editAreaDialogShow, setEditAreaDialogShow] = useState(false);
   const [editProcessDialogShow, setEditProcessDialogShow] = useState(false);
 
   const [loading, setLoading] = useState(false);
-
-  const refetch = async () => {
-    setLoading(true);
-    await loadGroups();
-    await loadAreas();
-    await loadProcesses();
-    setLoading(false);
-  };
-
-  const loadGroups = async () => {
-    try {
-      await client.get('groups').then(res => {
-        let gro = res?.data?.data;
-        setGroups(gro);
-      });
-    } catch (error) {
-      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
-    }
-  };
-
-  const loadAreas = async () => {
-    try {
-      await client.get('areas').then(res => {
-        let are = res?.data?.data;
-        setAreas(are);
-      });
-    } catch (error) {
-      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
-    }
-  };
-
-  const loadProcesses = async () => {
-    try {
-      await client.get('process').then(res => {
-        let pro = res?.data?.data;
-        setProcess(pro);
-      });
-    } catch (error) {
-      console.log('🚀 ~ file: index.jsx ~ line 45 ~ onFinish ~ error', error);
-    }
-  };
 
   const openEditGroupDialog = g => {
     setEditGroup(g);
@@ -111,17 +70,48 @@ const Dashboard = () => {
     setEditProcessDialogShow(true);
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      setLoading(true);
-      await loadGroups();
-      await loadAreas();
-      await loadProcesses();
-      setLoading(false);
-    }
-    fetchData();
-  }, []);
+  const refetch = async () => {
+    setLoading(true);
+    await loadGroups();
+    await loadAreas();
+    await loadProcesses();
+    setLoading(false);
+  };
 
+  const loadGroups = async () => {
+    try {
+      await client.get('groups').then(res => {
+        let gro = res?.data?.data;
+        setGroups(gro);
+      });
+    } catch (error) {
+      console.log('🚀 ~ file: index.jsx ~ line 73 ~ onFinish ~ error', error);
+    }
+  };
+
+  const loadAreas = async () => {
+    try {
+      await client.get('areas').then(res => {
+        let are = res?.data?.data;
+        setAreas(are);
+      });
+    } catch (error) {
+      console.log('🚀 ~ file: index.jsx ~ line 84 ~ onFinish ~ error', error);
+    }
+  };
+
+  const loadProcesses = async () => {
+    try {
+      await client.get('process').then(res => {
+        let pro = res?.data?.data;
+        setProcess(pro);
+      });
+    } catch (error) {
+      console.log('🚀 ~ file: index.jsx ~ line 95 ~ loadProcesses ~ error', error);
+    }
+  };
+
+  // function for table as matrix creation
   const createTable = () => {
     let globalArray = [];
 
@@ -139,6 +129,18 @@ const Dashboard = () => {
 
     setGlobal(globalArray);
   };
+
+  // each time view is mounted, load all data and call function to create table
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      await loadGroups();
+      await loadAreas();
+      await loadProcesses();
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     createTable();
@@ -296,6 +298,10 @@ const Dashboard = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Mount create and edit dialogs
+            only appearing when showing state is true
+        */}
 
       <AddGroupDialog visible={addGroupDialogShow} setVisible={setAddGroupDialogShow} refetch={refetch} />
 

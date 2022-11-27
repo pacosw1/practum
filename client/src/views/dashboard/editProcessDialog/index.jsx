@@ -26,6 +26,7 @@ import { client } from '../../../config/environment';
 import toast from 'react-hot-toast';
 import { filter } from 'compression';
 
+// Material UI default variables for selected items on list
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -43,6 +44,7 @@ function getStyles(id, existent) {
   };
 }
 
+// follows process structure from backend
 const InitialProcess = {
   name: '',
   areaId: '',
@@ -90,6 +92,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     });
   };
 
+  // function that change existing entries in process
   const handleChangeEntry = event => {
     const aux = event.target.value;
 
@@ -102,6 +105,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     setProcess(newProcess);
   };
 
+  // function that change existing outputs in process
   const handleChangeOutput = event => {
     const aux = event.target.value;
 
@@ -114,6 +118,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     setProcess(newProcess);
   };
 
+  // function that change existing tools in process
   const handleChangeTool = event => {
     const aux = event.target.value;
 
@@ -153,6 +158,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     });
   };
 
+  // Next 3 functions to save new data
   const saveNewEntry = () => {
     const aux = newEntry;
     aux.id = idEntry;
@@ -177,6 +183,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     idTool += 1;
   };
 
+  // functions to delete chips when creating a new entry/output or tool
   const onDeleteEntry = id => {
     const aux = newEntriesArray.filter(entry => entry.id !== id);
     setNewEntriesArray([...aux]);
@@ -214,9 +221,12 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
     idTool = 0;
   };
 
+  // Update process function
   const updateProcess = async () => {
     setLoading(true);
     let auxProcess = process;
+
+    // Modifies existing objects in array for just an id
     auxProcess.existingEntries = process.existingEntries.map(ent => {
       return ent.id;
     });
@@ -229,6 +239,7 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
       return ent.id;
     });
 
+    // delete id property on each object
     auxProcess.newEntries = newEntriesArray.map(({ id, ...item }) => item);
     auxProcess.newOutputs = newOutputsArray.map(({ id, ...item }) => item);
     auxProcess.newTools = newToolsArray.map(({ id, ...item }) => item);
@@ -302,9 +313,6 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
       await client.get(`process/${actualProcess?.id}`).then(res => {
         let p = res?.data?.data;
 
-        console.log('wtf');
-        console.log(p);
-
         p.entries = p.entries.map(entry => {
           return {
             isExit: entry.isExit,
@@ -313,6 +321,8 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
             description: entry.entry.description,
           };
         });
+
+        // separate entries that belongs to outputs
         p.outputs = p.entries.filter(entry => entry.isExit === true);
         p.entries = p.entries.filter(entry => entry.isExit === false);
 
@@ -347,11 +357,6 @@ const EditProcessDialog = ({ visible, setVisible, refetch, actualProcess, setAct
       loadTools();
     }
   }, [visible, actualProcess]);
-
-  useEffect(() => {
-    // console.log("en", allEntries);
-    // console.log("ex", process.existingEntries);
-  }, [process]);
 
   return (
     <Dialog

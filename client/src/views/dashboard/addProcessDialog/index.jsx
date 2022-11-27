@@ -42,6 +42,7 @@ function getStyles(l, existent) {
   };
 }
 
+// follows backend process structure
 const InitialProcess = {
   name: '',
   areaId: '',
@@ -59,6 +60,7 @@ const InitialName = {
   description: '',
 };
 
+// Counters to control new entries / outputs and tools when creating or editing
 let idEntry = 0;
 let idOutput = 0;
 let idTool = 0;
@@ -104,6 +106,7 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
     setProcess({ ...process, existingTools: aux });
   };
 
+  // input text handles for each type of data
   const handleInputChangeEntry = e => {
     const { name, value } = e.target;
 
@@ -131,6 +134,7 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
     });
   };
 
+  // functions to save the data from 'new' states to corresponding array
   const saveNewEntry = () => {
     const aux = newEntry;
     aux.id = idEntry;
@@ -155,6 +159,7 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
     idTool += 1;
   };
 
+  // functions to delete chips when creating a new entry/output or tool
   const onDeleteEntry = id => {
     const aux = newEntriesArray.filter(entry => entry.id !== id);
     setNewEntriesArray([...aux]);
@@ -195,6 +200,8 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
   const createProcess = async () => {
     setLoading(true);
     let auxProcess = process;
+
+    // Modifies existing objects in array for just an id
     auxProcess.existingEntries = process.existingEntries.map(ent => {
       return ent.id;
     });
@@ -207,6 +214,7 @@ const AddProcessDialog = ({ visible, setVisible, refetch, groups, areas, actual,
       return ent.id;
     });
 
+    // delete id property on each object
     auxProcess.newEntries = newEntriesArray.map(({ id, ...item }) => item);
     auxProcess.newOutputs = newOutputsArray.map(({ id, ...item }) => item);
     auxProcess.newTools = newToolsArray.map(({ id, ...item }) => item);

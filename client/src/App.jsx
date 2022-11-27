@@ -19,6 +19,7 @@ const App = () => {
     );
   }
 
+  // If not logged show authorization view
   if (!isLogged) {
     return <Auth />;
   }

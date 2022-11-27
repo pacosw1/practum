@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from "react";
-import { client } from "../../config/environment";
+import React, { createContext, useEffect, useState } from 'react';
+import { client } from '../../config/environment';
 
 const sessionContext = createContext({});
 
@@ -14,14 +14,16 @@ const SessionProvider = ({ children }) => {
 
   const logout = async () => {
     logoutWindow();
-    await client.post("auth/logout");
+    await client.post('auth/logout');
     localStorage.clear();
-    localStorage.setItem("logout", Date.now()); // Force logout on every tab
+    localStorage.setItem('logout', Date.now()); // Force logout on every tab
   };
 
+  // when mounted, check if session is authorized, if is not set
+  // isLogged to false.
   useEffect(() => {
     const fetchSession = async () => {
-      await client.get("auth").then((res) => {
+      await client.get('auth').then(res => {
         const data = res?.data?.data?.data;
         const authentication = res?.data?.data?.authenticated;
         setIsLogged(authentication);
@@ -31,7 +33,7 @@ const SessionProvider = ({ children }) => {
     };
 
     setLoading(true);
-    fetchSession().catch((err) => {
+    fetchSession().catch(err => {
       setLoading(false);
     });
   }, []);

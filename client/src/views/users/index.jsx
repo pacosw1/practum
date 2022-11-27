@@ -13,6 +13,7 @@ const Users = () => {
   const [selectedUser, setSelectedUser] = useState({});
   const [loading, setLoading] = useState(false);
 
+  // Each object from columns array is a column
   const columns = [
     {
       field: 'email',

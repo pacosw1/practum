@@ -27,8 +27,8 @@ const ListS = () => {
   const [editEntryShow, setEditEntryShow] = useState(false);
   const [entryToEdit, setEntryToEdit] = useState();
 
+  // Controls dialogs visibility
   const [addOutputShow, setAddOutputShow] = useState(false);
-
   const [editOutputShow, setEditOutputShow] = useState(false);
   const [outputToEdit, setOutputToEdit] = useState();
 
@@ -197,6 +197,10 @@ const ListS = () => {
           </Grid>
         </Grid>
       </Box>
+
+      {/* Mount create and edit dialogs
+            only appearing when showing state is true
+        */}
 
       <AddEntry visible={addEntryShow} setVisible={setAddEntryShow} refetch={refetch} />
 
